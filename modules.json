@@ -14,6 +14,11 @@
             "branch": "master",
             "git_sha": "ccacf6f5de6df3bc6d73b665c1fd2933d8bbc290",
             "installed_by": ["modules"]
+          },
+          "plink2/vcf": {
+            "branch": "master",
+            "git_sha": "d1112c6df96b33e845085cf0c1330593c9cb3ac8",
+            "installed_by": ["modules"]
           }
         }
       }
