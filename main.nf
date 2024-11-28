@@ -25,7 +25,6 @@ validateParameters()
 */
 include { BCFTOOLS_VIEW }         from './modules/nf-core/bcftools/view/main'
 include { BCFTOOLS_MERGE }        from './modules/nf-core/bcftools/merge/main'
-include { BEAGLE5_BEAGLE }        from './modules/nf-core/beagle5/beagle/main'
 include { GATK4_COMBINEGVCFS }    from './modules/nf-core/gatk4/combinegvcfs/main'
 include { GATK4_GENOTYPEGVCFS }   from './modules/nf-core/gatk4/genotypegvcfs/main'
 include { GATK4_HAPLOTYPECALLER } from './modules/nf-core/gatk4/haplotypecaller/main'
@@ -95,29 +94,6 @@ workflow {
     ch_dbsnp_index
   )
 
-  ch_gvcf_index = GATK4_HAPLOTYPECALLER.out.vcf.join(GATK4_HAPLOTYPECALLER.out.tbi)
-
-
-
-
-  GATK4_HAPLOTYPECALLER.out.vcf
-                   .map{meta, vcf -> vcf}
-                   .collect()
-    .set{ch_vcf_list}
-
-  GATK4_HAPLOTYPECALLER.out.tbi
-                   .map{meta, tbi -> tbi}
-                   .collect()
-    .set{ch_tbi_list}
-
-
-
-  BCFTOOLS_MERGE(
-    ch_vcf_list.concat(ch_tbi_list).collect(flat: false).map{ vcf, tbi -> [['id': 'cohort'], vcf,tbi] },
-    ch_genome_fasta,
-    ch_genome_fasta_index,
-    [ [],[] ]
-  )
 
 
 
@@ -139,15 +115,6 @@ workflow {
     ch_dbsnp,
     ch_dbsnp_index
   )
-
-
-  // BEAGLE5_BEAGLE(
-  //   GATK4_GENOTYPEGVCFS.out.vcf,
-  //   params.beagle_refpanel,
-  //   params.beagle_genmap,
-  //   [],
-  //   []
-  // )
 
 
 
