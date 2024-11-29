@@ -2,34 +2,26 @@
     tag "$pipeline_name"
 
     input:
-    val pipeline_name     // String
-    val nextflow_opts     // String
-    val params_file       // pipeline params-file
-    val samplesheet       // pipeline samplesheet
-    val additional_config // custom configs
+    val pipeline_name
+    val nextflow_opts
+    val samplesheet
+    val additional_config
 
     when:
     task.ext.when == null || task.ext.when
 
-    exec:
-    // def args = task.ext.args ?: ''
-    def cache_dir = java.nio.file.Paths.get(workflow.workDir.resolve(pipeline_name).toUri())
-    java.nio.file.Files.createDirectories(cache_dir)
-    def nxf_cmd = [
-        'nextflow run',
-            pipeline_name,
-            nextflow_opts,
-            params_file ? "-params-file $params_file" : '',
-            additional_config ? "-c $additional_config" : '',
-            samplesheet ? "--input $samplesheet" : '',
-            "--outdir $task.workDir/results",
-    ]
-    def builder = new ProcessBuilder(nxf_cmd.join(" ").tokenize(" "))
-    builder.directory(cache_dir.toFile())
-    process = builder.start()
-    assert process.waitFor() == 0: process.text
-
     output:
-    path "results"  , emit: output
-    val process.text, emit: log
+    path("./results/"), emit: result_dir
+
+    shell:
+    def conf = additional_config ? "-c $additional_config" : ""
+    def samples = "--input $samplesheet"
+    """
+    nextflow run \\
+        ${pipeline_name} \\
+        ${nextflow_opts} \\
+        ${conf} \\
+        ${samples} \\
+        "--outdir $task.workDir/results"
+    """
 }
