@@ -15,6 +15,6 @@ process REPLACE_INF_VCF {
     // def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    zcat $vcf | sed 's/Infinity/500/g' | bgzip > ${prefix}_rep.vcf.gz
+    zcat $vcf | sed 's/Infinity/500/g' | sed 's/inf/500/g' | bgzip > ${prefix}_rep.vcf.gz
     """
 }

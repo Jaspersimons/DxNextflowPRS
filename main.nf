@@ -23,6 +23,10 @@ validateParameters()
     Import modules/subworkflows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { BCFTOOLS_ANNOTATE
+          as REMOVE_CHR }         from './modules/nf-core/bcftools/annotate/main'
+include { BCFTOOLS_ANNOTATE
+          as ADD_CHR }            from './modules/nf-core/bcftools/annotate/main'
 include { BCFTOOLS_VIEW }         from './modules/nf-core/bcftools/view/main'
 include { BCFTOOLS_MERGE }        from './modules/nf-core/bcftools/merge/main'
 include { GATK4_COMBINEGVCFS }    from './modules/nf-core/gatk4/combinegvcfs/main'
@@ -66,6 +70,12 @@ workflow {
   ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")
     .map{ file -> [['id': file.getSimpleName()], file] }.collect()
 
+  ch_1kgp_vcf = Channel.fromPath("${params.kgp_vcf}")
+    .map{ file -> [['id': file.getSimpleName()], file] }.collect()
+
+  ch_1kgp_index =  Channel.fromPath("${params.kgp_vcf}.tbi")
+    .map{ file -> [['id': file.getSimpleName()], file] }.collect()
+
 
   ch_bam = Channel.fromFilePairs(
         "${params.bam_path}/*.{bam,bai}",
@@ -81,10 +91,13 @@ workflow {
 
 
 
-  GATK4_HAPLOTYPECALLER(
-  ch_bam
+ //
+ // Sample Variant calling and Genotyping
+ //
+ GATK4_HAPLOTYPECALLER(
+    ch_bam
       .combine(
-        GET_SNPLIST.out.tsv
+        GET_SNPLIST.out.list
           .map{meta, path -> path})
       .map{meta, bam, bai, tsv -> [meta, bam, bai, tsv, []]},
     ch_genome_fasta,
@@ -94,7 +107,15 @@ workflow {
     ch_dbsnp_index
   )
 
+    GATK4_HAPLOTYPECALLER.out.vcf
+                   .map{meta, vcf -> vcf}
+                   .collect()
+    .set{ch_vcf_list}
 
+    GATK4_HAPLOTYPECALLER.out.tbi
+                   .map{meta, tbi -> tbi}
+                   .collect()
+    .set{ch_tbi_list}
 
 
   GATK4_COMBINEGVCFS(
@@ -116,11 +137,59 @@ workflow {
     ch_dbsnp_index
   )
 
+//
+// Impute missing Alt alleles
+//
+  REMOVE_CHR(
+    GATK4_GENOTYPEGVCFS.out.vcf
+      .join(GATK4_GENOTYPEGVCFS.out.tbi)
+      .map {meta, input, index -> [meta, input, index , [], []]},
+    []
+  )
+
+
+  BCFTOOLS_VIEW(
+    ch_1kgp_vcf.join(ch_1kgp_index),
+    GET_SNPLIST.out.tsv.map{meta, tsv -> tsv},
+    [],
+    []
+  )
+
+
+  BCFTOOLS_VIEW.out.vcf
+    .map{meta, vcf -> vcf}
+    .concat(
+      REMOVE_CHR.out.vcf
+      .map{meta, vcf -> vcf}
+    ).collect()
+    .set{merge_vcf_list}
+
+  BCFTOOLS_VIEW.out.tbi
+    .map{meta, vcf -> vcf}
+    .concat(
+      REMOVE_CHR.out.tbi
+      .map{meta, vcf -> vcf}
+    ).collect()
+    .set{merge_index_list}
+
+  merge_vcf_list
+    .concat(merge_index_list)
+    .collect(flat: false)
+    .map { vcf, tbi -> [['id': "samples_1kgp"], vcf, tbi] }
+    .set { merge_list }
+
+  // ch_vcf_list.concat(ch_tbi_list).collect(flat: false).map{ vcf, tbi -> [['id': 'cohort'], vcf,tbi] }
+  BCFTOOLS_MERGE(
+    merge_list,
+    ch_genome_fasta,
+    ch_genome_fasta_index
+  )
+
+
 
 
   // Convert VCF to PLINK format
-  REPLACE_INF_VCF(GATK4_GENOTYPEGVCFS.out.vcf)
-
+  REPLACE_INF_VCF(BCFTOOLS_MERGE.out.vcf)
   PLINK2_VCF(REPLACE_INF_VCF.out.vcf)
 
   GENERATE_SAMPLESHEET(

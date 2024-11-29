@@ -1,57 +1,75 @@
 {
-  "name": "UMCUGenetics/WorkflowName",
-  "homePage": "https://github.com/UMCUGenetics/WorkflowName",
-  "repos": {
-    "https://github.com/nf-core/modules.git": {
-      "modules": {
-        "nf-core": {
-          "bcftools/merge": {
-            "branch": "master",
-            "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-            "installed_by": ["modules"]
-          },
-          "bcftools/view": {
-            "branch": "master",
-            "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-            "installed_by": ["modules"]
-          },
-          "beagle5/beagle": {
-            "branch": "master",
-            "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-            "installed_by": ["modules"]
-          },
-          "fastqc": {
-            "branch": "master",
-            "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
-            "installed_by": ["modules"]
-          },
-          "gatk4/combinegvcfs": {
-            "branch": "master",
-            "git_sha": "6b3bf38285d94cc1ea3cd9fa93310d54b04c3819",
-            "installed_by": ["modules"]
-          },
-          "gatk4/genotypegvcfs": {
-            "branch": "master",
-            "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-            "installed_by": ["modules"]
-          },
-          "gatk4/haplotypecaller": {
-            "branch": "master",
-            "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-            "installed_by": ["modules"]
-          },
-          "multiqc": {
-            "branch": "master",
-            "git_sha": "ccacf6f5de6df3bc6d73b665c1fd2933d8bbc290",
-            "installed_by": ["modules"]
-          },
-          "plink2/vcf": {
-            "branch": "master",
-            "git_sha": "d1112c6df96b33e845085cf0c1330593c9cb3ac8",
-            "installed_by": ["modules"]
-          }
+    "name": "UMCUGenetics/WorkflowName",
+    "homePage": "https://github.com/UMCUGenetics/WorkflowName",
+    "repos": {
+        "https://github.com/nf-core/modules.git": {
+            "modules": {
+                "nf-core": {
+                    "bcftools/annotate": {
+                        "branch": "master",
+                        "git_sha": "cb08035150685b11d890d90c9534d4f16869eaec",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "bcftools/merge": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "bcftools/view": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "fastqc": {
+                        "branch": "master",
+                        "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "gatk4/combinegvcfs": {
+                        "branch": "master",
+                        "git_sha": "6b3bf38285d94cc1ea3cd9fa93310d54b04c3819",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "gatk4/genotypegvcfs": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "gatk4/haplotypecaller": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "multiqc": {
+                        "branch": "master",
+                        "git_sha": "ccacf6f5de6df3bc6d73b665c1fd2933d8bbc290",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "plink2/vcf": {
+                        "branch": "master",
+                        "git_sha": "d1112c6df96b33e845085cf0c1330593c9cb3ac8",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

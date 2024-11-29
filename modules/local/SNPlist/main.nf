@@ -8,14 +8,22 @@ process GET_SNPLIST {
     val assembly_version
 
     output:
-    tuple val(PGS_ID), path("*_snplist.list"), emit: tsv
+    tuple val(PGS_ID), path("*_snplist.list"), emit: list
+    tuple val(PGS_ID), path("*_snplist.tsv"), emit: tsv
 
 
     script:
     """
     python ${moduleDir}/get_snp_list.py \\
-    ${PGS_ID} \\
-    ${assembly_version} > ${PGS_ID}_snplist.list
+        ${PGS_ID} \\
+        ${assembly_version} > ${PGS_ID}_snplist.list
+
+    cat ${PGS_ID}_snplist.list | \\
+        tr ":" "\t" | \\
+        tr "-" "\t" | \\
+        cut -f 1,2 | \\
+        sed 's/chr//g' \\
+        > ${PGS_ID}_snplist.tsv
     """
 
 
