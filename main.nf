@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    UMCUGenetics/dxnextflowprs
+    nf-core/prs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/UMCUGenetics/dxnextflowprs
+    Github : https://github.com/nf-core/prs
 ----------------------------------------------------------------------------------------
 */
 
@@ -13,9 +13,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { DXNEXTFLOWPRS  } from './workflows/dxnextflowprs'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_dxnextflowprs_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_dxnextflowprs_pipeline'
+include { PRS  } from './workflows/prs'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_prs_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_dxne
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow UMCUGENETICS_DXNEXTFLOWPRS {
+workflow NFCORE_PRS {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -35,11 +35,11 @@ workflow UMCUGENETICS_DXNEXTFLOWPRS {
     //
     // WORKFLOW: Run pipeline
     //
-    DXNEXTFLOWPRS (
+    PRS (
         samplesheet
     )
     emit:
-    multiqc_report = DXNEXTFLOWPRS.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = PRS.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    UMCUGENETICS_DXNEXTFLOWPRS (
+    NFCORE_PRS (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
@@ -78,7 +78,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         
-        UMCUGENETICS_DXNEXTFLOWPRS.out.multiqc_report
+        NFCORE_PRS.out.multiqc_report
     )
 }
 

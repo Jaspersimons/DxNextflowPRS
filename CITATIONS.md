@@ -1,4 +1,4 @@
-# UMCUGenetics/dxnextflowprs: Citations
+# nf-core/prs: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
@@ -10,7 +10,9 @@
 
 ## Pipeline tools
 
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
+> Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
