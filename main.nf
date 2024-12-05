@@ -71,15 +71,15 @@ workflow {
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        
-        NFCORE_PRS.out.multiqc_report
-    )
+    // PIPELINE_COMPLETION (
+        // params.email,
+        // params.email_on_fail,
+        // params.plaintext_email,
+        // params.outdir,
+        // params.monochrome_logs,
+
+        // NFCORE_PRS.out.multiqc_report
+    // )
 }
 
 /*
