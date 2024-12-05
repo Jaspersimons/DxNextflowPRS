@@ -1,67 +1,56 @@
+bump_version: null
 lint:
   files_exist:
-    - .gitattributes
-    - .editorconfig
-    - .prettierignore
-    - .prettierrc.yml
-    - .github/CONTRIBUTING.md
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/ISSUE_TEMPLATE/config.yml
-    - .github/ISSUE_TEMPLATE/feature_request.yml
-    - .github/PULL_REQUEST_TEMPLATE.md
-    - .github/.dockstore.yml
-    - .github/workflows/ci.yml
-    - .github/workflows/awstest.yml
-    - .github/workflows/awsfulltest.yml
-    - .github/workflows/branch.yml
-    - .github/workflows/linting_comment.yml
-    - .github/workflows/linting.yml
-    - CODE_OF_CONDUCT.md
-    - CHANGELOG.md
-    - CITATIONS.md
-    - assets/email_template.html
-    - assets/email_template.txt
-    - assets/sendmail_template.txt
-    - assets/nf-core-WorkflowName_logo_light.png
-    - assets/nf-core-workflowname_logo_light.png
-    - conf/igenomes.config
-    - conf/modules.config
-    - conf/test.config
-    - conf/test_full.config
-    - docs/images/nf-core-WorkflowName_logo_light.png
-    - docs/images/nf-core-WorkflowName_logo_dark.png
-    - docs/output.md
-    - docs/README.md
-    - docs/README.md
-    - docs/usage.md
-    - lib/nfcore_external_java_deps.jar
-    - lib/NfcoreTemplate.groovy
-    - lib/Utils.groovy
-    - lib/WorkflowMain.groovy
-    - lib/WorkflowWorkflowName.groovy
-    - pyproject.toml
+  - conf/igenomes.config
+  - conf/igenomes_ignored.config
+  - conf/igenomes.config
+  - conf/igenomes_ignored.config
+  - CODE_OF_CONDUCT.md
+  - assets/nf-core-dxnextflowprs_logo_light.png
+  - docs/images/nf-core-dxnextflowprs_logo_light.png
+  - docs/images/nf-core-dxnextflowprs_logo_dark.png
+  - .github/ISSUE_TEMPLATE/config.yml
+  - .github/workflows/awstest.yml
+  - .github/workflows/awsfulltest.yml
   files_unchanged:
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/workflows/linting.yml
-    - .gitignore
-    - CODE_OF_CONDUCT.md
-    - LICENSE
-    - assets/nf-core-workflowname_logo_light.png
-    - docs/images/nf-core-workflowname_logo_light.png
-    - docs/images/nf-core-workflowname_logo_dark.png
+  - .github/CONTRIBUTING.md
+  - .prettierignore
+  - .prettierignore
+  - .github/CONTRIBUTING.md
+  - .prettierignore
+  - .prettierignore
+  - CODE_OF_CONDUCT.md
+  - assets/nf-core-dxnextflowprs_logo_light.png
+  - docs/images/nf-core-dxnextflowprs_logo_light.png
+  - docs/images/nf-core-dxnextflowprs_logo_dark.png
+  - .github/ISSUE_TEMPLATE/bug_report.yml
   multiqc_config:
-    - report_comment
+  - report_comment
   nextflow_config:
-    - dag.enabled
-    - dag.file
-    - manifest.name
-    - manifest.homePage
-    - params.outdir
-    - params.input
-    - params.validationShowHiddenParams
-    - params.validationSchemaIgnoreParams
-    - process.cpus
-    - process.memory
-    - process.time
-    - custom_config
+  - manifest.name
+  - manifest.homePage
+  - validation.help.beforeText
+  - validation.help.afterText
+  - validation.summary.beforeText
+  - validation.summary.afterText
+nf_core_version: 3.0.3.dev0
+org_path: null
 repository_type: pipeline
+template:
+  author: Jorisvansteenbrugge
+  description: prs pipeline
+  force: true
+  is_nfcore: false
+  name: DxNextflowPRS
+  org: UMCUGenetics
+  outdir: .
+  skip_features:
+  - igenomes
+  - gitpod
+  - codespaces
+  - fastqc
+  - adaptivecard
+  - slackreport
+  - seqera_platform
+  version: 1.0.0dev
+update: null

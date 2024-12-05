@@ -1,11 +1,12 @@
-include { GATK4_COMBINEGVCFS }    from '../../modules/nf-core/gatk4/combinegvcfs/main'
-include { GATK4_GENOTYPEGVCFS }   from '../../modules/nf-core/gatk4/genotypegvcfs/main'
+include { BCFTOOLS_INDEX        } from '../../modules/nf-core/bcftools/index/main'
+include { GATK4_COMBINEGVCFS    } from '../../modules/nf-core/gatk4/combinegvcfs/main'
+include { GATK4_GENOTYPEGVCFS   } from '../../modules/nf-core/gatk4/genotypegvcfs/main'
 include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/gatk4/haplotypecaller/main'
 
 workflow VARIANT_CALLING {
 
     take:
-    ch_bam
+    ch_samplesheet
     ch_genome_fasta
     ch_genome_index
     ch_genome_dict
@@ -22,7 +23,7 @@ workflow VARIANT_CALLING {
 
 
     GATK4_HAPLOTYPECALLER(
-        ch_bam
+        ch_samplesheet
             .combine(snp_list.map{meta, path -> path})
             .map{meta, bam, bai, tsv -> [meta, bam, bai, tsv, []]},
         ch_genome_fasta,
@@ -42,7 +43,6 @@ workflow VARIANT_CALLING {
                    .collect()
     .set{ch_tbi_list}
 
-
     GATK4_COMBINEGVCFS(
         ch_vcf_list
             .concat(ch_tbi_list).collect(flat: false)
@@ -52,11 +52,16 @@ workflow VARIANT_CALLING {
         ch_genome_dict.map{ meta, dict -> dict }
     )
 
+    BCFTOOLS_INDEX(
+        GATK4_COMBINEGVCFS.out.combined_gvcf
+    )
+
+
 
     GATK4_GENOTYPEGVCFS(
-        GATK4_COMBINEGVCFS.out.vcf
-            .join(GATK4_COMBINEGVCFS.out.tbi)
-            .map{ meta, vcf, tbi -> [meta, vcf,tbi, [],[]] },
+        GATK4_COMBINEGVCFS.out.combined_gvcf
+            .join(BCFTOOLS_INDEX.out.tbi)
+            .map{ meta, vcf, tbi -> [meta, vcf, tbi, [], [] ] },
         ch_genome_fasta,
         ch_genome_index,
         ch_genome_dict,

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from sys import argv
 from argparse import ArgumentParser
 from pathlib import Path

@@ -65,7 +65,8 @@ workflow IMPUTE_ALLELES {
     BCFTOOLS_MERGE(
         merge_list,
         ch_genome_fasta,
-        ch_genome_index
+        ch_genome_index,
+        [[],[]]
     )
 
     emit:

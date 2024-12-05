@@ -15,7 +15,7 @@ process GENERATE_SAMPLESHEET {
 
     script:
     def prefix = path_prefix.toString() - ~/\.pgen$/ //getParent()
-    def chr = chrom ?: "" 
+    def chr = chrom ?: ""
     def format = format ?: "pfile"
     """
     python ${moduleDir}/create_sample_sheet.py \\

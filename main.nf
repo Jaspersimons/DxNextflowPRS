@@ -1,97 +1,89 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    UMCUGenetics/DxNextflowPRS
+    nf-core/prs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/UMCUGenetics/DxNextflowPRS
+    Github : https://github.com/nf-core/prs
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Validate parameters
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { validateParameters; } from 'plugin/nf-schema'
-validateParameters()
-
+include { PRS  } from './workflows/prs'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_prs_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Import modules/subworkflows
+    NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+//
+// WORKFLOW: Run main analysis pipeline depending on type of input
+//
+workflow NFCORE_PRS {
 
+    take:
+    samplesheet // channel: samplesheet read in from --input
 
-include { GET_SNPLIST }           from './modules/local/SNPlist/main'
-include { MULTIQC }               from './modules/nf-core/multiqc/main'
-include { NEXTFLOW_RUN }          from './modules/local/nextflow/run/main'
+    main:
 
-
-include { VARIANT_CALLING }       from './subworkflows/local/variant_calling'
-include { IMPUTE_ALLELES }        from './subworkflows/local/impute_alleles'
-include { PREPARE_SAMPLESHEET }   from './subworkflows/local/prepare_samplesheet'
-
+    //
+    // WORKFLOW: Run pipeline
+    //
+    PRS (
+        samplesheet
+    )
+    emit:
+    multiqc_report = PRS.out.multiqc_report // channel: /path/to/multiqc_report.html
+}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Main workflow
+    RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 workflow {
 
-  ch_genome_fasta = Channel.fromPath("${params.genome_fasta}")
-        .map{ file -> [file.getSimpleName(), file] }
-        .collect()
+    main:
+    //
+    // SUBWORKFLOW: Run initialisation tasks
+    //
+    PIPELINE_INITIALISATION (
+        params.version,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir,
+        params.input
+    )
 
-  ch_genome_index = Channel.fromPath("${params.genome_fasta}.fai")
-        .map{ file -> [file.getSimpleName(), file] }
-        .collect()
+    //
+    // WORKFLOW: Run main workflow
+    //
+    NFCORE_PRS (
+        PIPELINE_INITIALISATION.out.samplesheet
+    )
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    // PIPELINE_COMPLETION (
+        // params.email,
+        // params.email_on_fail,
+        // params.plaintext_email,
+        // params.outdir,
+        // params.monochrome_logs,
 
-  ch_genome_dict = Channel.fromPath("${params.genome_dict}")
-        .map{ file -> [file.getSimpleName(), file] }
-        .collect()
-
-  ch_bam = Channel.fromFilePairs(
-        "${params.bam_path}/*.{bam,bai}",
-        checkIfExists: true) {
-            file -> file.name.replaceAll(/.bam|.bai$/,'') }
-        .map{ meta, bam_index -> [['id': meta], bam_index[0], bam_index[1]] }
-
-  //
-  // When starting with BAM files, get SNP positions for targeted GATK variant
-  // calling
-  //
-  GET_SNPLIST(params.PGS_ID, params.assembly_version)
-
-  VARIANT_CALLING(
-    ch_bam,
-    ch_genome_fasta,
-    ch_genome_dict,
-    ch_genome_index,
-    GET_SNPLIST.out.list
-  )
-
-  IMPUTE_ALLELES(
-    VARIANT_CALLING.out.vcf,
-    VARIANT_CALLING.out.tbi,
-    ch_genome_fasta,
-    ch_genome_index,
-    GET_SNPLIST.out.tsv
-  )
-
-  PREPARE_SAMPLESHEET(
-    IMPUTE_ALLELES.out.vcf
-  )
-
-  NEXTFLOW_RUN (
-    'pgscatalog/pgsc_calc',    // Select nf-core pipeline
-    params.pgsc_calc_opts,
-    PREPARE_SAMPLESHEET.out.samplesheet,
-    params.pgsc_calc_config
-  )
-
+        // NFCORE_PRS.out.multiqc_report
+    // )
 }
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    THE END
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
