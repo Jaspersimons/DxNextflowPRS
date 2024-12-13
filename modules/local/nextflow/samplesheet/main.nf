@@ -19,7 +19,7 @@ process GENERATE_SAMPLESHEET {
     def format = format ?: "pfile"
     """
     python ${moduleDir}/create_sample_sheet.py \\
-        sampleX \\
+        Cohort \\
         ${prefix} \\
         --format ${format}
     """

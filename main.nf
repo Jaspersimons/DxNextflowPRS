@@ -25,7 +25,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_PRS {
+workflow NEXTFLOW_PRS {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -65,21 +65,21 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_PRS (
+    NEXTFLOW_PRS (
         PIPELINE_INITIALISATION.out.samplesheet
     )
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    // PIPELINE_COMPLETION (
-        // params.email,
-        // params.email_on_fail,
-        // params.plaintext_email,
-        // params.outdir,
-        // params.monochrome_logs,
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
 
-        // NFCORE_PRS.out.multiqc_report
-    // )
+        NEXTFLOW_PRS.out.multiqc_report
+    )
 }
 
 /*
