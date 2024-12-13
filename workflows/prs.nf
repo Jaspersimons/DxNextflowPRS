@@ -108,11 +108,6 @@ workflow PRS {
         )
     }
 
-
-
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    // ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
     //
     // Collate and save software versions
     //
