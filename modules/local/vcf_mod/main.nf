@@ -12,9 +12,14 @@ process REPLACE_INF_VCF {
     tuple val(meta), path("*_rep.vcf.gz"), emit: vcf
 
     script:
-    // def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     zcat $vcf | sed 's/Infinity/500/g' | sed 's/inf/500/g' | bgzip > ${prefix}_rep.vcf.gz
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo "" | bgzip > ${prefix}_rep.vcf.gz
     """
 }

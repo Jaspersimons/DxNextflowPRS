@@ -34,4 +34,11 @@ process GET_PGSC_SNPLIST {
 
     export prefix=${prefix}
     """
+
+    stub:
+    def prefix = PGS_ID ?: "${meta.id}"
+    """
+    touch ${prefix}_snplist.list
+    touch ${prefix}_snplist.tsv
+    """
 }

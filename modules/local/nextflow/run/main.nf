@@ -36,4 +36,9 @@
         ${samples} \\
         "--outdir $task.workDir/results"
     """
+
+    stub:
+    """
+    mkdir ./results
+    """
 }

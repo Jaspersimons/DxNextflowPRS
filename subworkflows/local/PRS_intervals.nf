@@ -1,6 +1,6 @@
 include { GET_PGSC_SNPLIST   } from '../../modules/local/SNPlist/pgsc'
-include { GET_CUSTOM_SNPLIST } from '../../modules/local/SNPlist/customscoring'
-include { GET_SCORING_BUILD  } from '../../modules/local/SNPlist/scoring_build'
+// include { GET_CUSTOM_SNPLIST } from '../../modules/local/SNPlist/customscoring'
+
 
 
 workflow PRS_INTERVALS {
@@ -18,11 +18,6 @@ workflow PRS_INTERVALS {
         ch_custom_scoring = Channel.fromPath(params.custom_scoring)
             .map{ path -> [['id': path.getSimpleName()], path] }
             .collect()
-
-        GET_SCORING_BUILD(params.custom_scoring)
-        GET_SCORING_BUILD.out.build
-            .set{ scoring_build }
-
 
         GET_PGSC_SNPLIST(
             [],

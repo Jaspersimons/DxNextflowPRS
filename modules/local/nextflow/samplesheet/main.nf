@@ -24,4 +24,9 @@ process GENERATE_SAMPLESHEET {
         --format ${format}
     """
 
+    stub:
+    def prefix = path_prefix.toString() - ~/\.pgen$/
+    """
+    touch output_samplesheet.csv
+    """
 }
