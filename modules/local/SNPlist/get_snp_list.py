@@ -38,6 +38,9 @@ def positions_to_tsv(df, chr_colname, pos_colname, assembly_version):
         chrom = row[chr_colname]
         pos = row[pos_colname]
 
+        if "chr" in chrom:
+            chr_prefix = ""
+
         tsv_fmt = f"{chr_prefix}{chrom}:{pos}-{pos}"
         if "None" in tsv_fmt:
            continue

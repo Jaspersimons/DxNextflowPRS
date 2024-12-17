@@ -1,0 +1,29 @@
+
+nextflow_pipeline {
+    name "Test pipeline"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Run pipeline stub test") {
+        options "-stub"
+        when {
+        }
+        then{
+            assert workflow.success
+        }
+    }
+}
+
+nextflow_pipeline {
+    name "Test pipeline"
+    script "main.nf"
+    tag "pipeline"
+
+    test("Run pipeline test") {
+        when {
+        }
+        then{
+            assert workflow.success
+        }
+    }
+}
