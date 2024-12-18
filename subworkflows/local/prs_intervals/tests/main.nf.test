@@ -1,0 +1,39 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PRS_INTERVALS"
+    script "../main.nf"
+
+    workflow "PRS_INTERVALS"
+
+    tag "subworkflows"
+    tag "subworkflows/prs_intervals"
+    tag "local"
+    tag "subworkflows/local"
+
+    test("test_PRS_INTERVALS - Conditional Fail") {
+        config "./con_fail.config"
+        when {
+            workflow { }
+            then {
+                assertAll(
+                    { assert !workflow.success  }
+                )
+            }
+        }
+    }
+
+    test("test_PRS_INTERVALS - PGS_ID") {
+        when {
+            workflow { }
+            then {
+                assertAll (
+                    {assert workflow.success},
+                    {assert snapshot(
+                        workflow.out.list,
+                        workflow.out.tsv
+                    ).match()}
+                )
+            }
+        }
+    }
+}

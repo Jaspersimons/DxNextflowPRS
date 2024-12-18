@@ -6,6 +6,7 @@
 
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { NEXTFLOW_RUN           } from '../modules/local/nextflow/run/main'
+include { PGS_NORM               } from '../modules/local/pgs_norm/main'
 
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -15,7 +16,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prs_
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
 include { IMPUTE_ALLELES         } from '../subworkflows/local/impute_alleles'
 include { PREPARE_SAMPLESHEET    } from '../subworkflows/local/prepare_samplesheet'
-include { PRS_INTERVALS          } from '../subworkflows/local/PRS_intervals'
+include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,20 +83,43 @@ workflow PRS {
     )
 
     if (params.custom_scoring) {
-        NEXTFLOW_RUN (
-            'pgscatalog/pgsc_calc',
-            params.pgsc_calc_opts,
-            PREPARE_SAMPLESHEET.out.samplesheet,
-            params.pgsc_calc_config,
-            [],
-            params.assembly_version,
-            params.custom_scoring,
-            []
-            // ch_ancestry
-        )
-    }
+        println("YES")
+        // Run pgsc_calc without ancestry database
+        if (params.custom_mu && params.custom_sd) {
+            println("YESYES")
+            NEXTFLOW_RUN (
+                'pgscatalog/pgsc_calc',
+                params.pgsc_calc_opts,
+                PREPARE_SAMPLESHEET.out.samplesheet,
+                params.pgsc_calc_config,
+                [], // no PGS_ID
+                params.assembly_version,
+                params.custom_scoring,
+                [] // no ancestry database
 
-    if (params.PGS_ID) {
+            )
+
+            PGS_NORM(
+                NEXTFLOW_RUN.out.result_dir,
+                params.custom_mu,
+                params.custom_sd
+            )
+
+        // Run pgsc_calc with ancestry database
+        } else {
+            NEXTFLOW_RUN (
+                'pgscatalog/pgsc_calc',
+                params.pgsc_calc_opts,
+                PREPARE_SAMPLESHEET.out.samplesheet,
+                params.pgsc_calc_config,
+                [], // no PGS_ID
+                params.assembly_version,
+                params.custom_scoring,
+                ch_ancestry
+            )
+        }
+
+    } else if (params.PGS_ID) {
         NEXTFLOW_RUN (
             'pgscatalog/pgsc_calc',
             params.pgsc_calc_opts,
@@ -103,7 +127,7 @@ workflow PRS {
             params.pgsc_calc_config,
             params.PGS_ID,
             params.assembly_version,
-            [],
+            [], //no custom scoring model
             ch_ancestry
         )
     }

@@ -38,8 +38,12 @@ def positions_to_tsv(df, chr_colname, pos_colname, assembly_version):
         chrom = row[chr_colname]
         pos = row[pos_colname]
 
-        if "chr" in chrom:
-            chr_prefix = ""
+        try:
+            if "chr" in chrom:
+                chr_prefix = ""
+        # For GRChr37 the chrom will be read as an int and which causes this error, which we can safely ignore
+        except TypeError:
+            pass
 
         tsv_fmt = f"{chr_prefix}{chrom}:{pos}-{pos}"
         if "None" in tsv_fmt:

@@ -1,6 +1,4 @@
-include { GET_PGSC_SNPLIST   } from '../../modules/local/SNPlist/pgsc'
-// include { GET_CUSTOM_SNPLIST } from '../../modules/local/SNPlist/customscoring'
-
+include { GET_PGSC_SNPLIST   } from '../../../modules/local/SNPlist/pgsc'
 
 
 workflow PRS_INTERVALS {
