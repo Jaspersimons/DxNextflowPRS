@@ -9,6 +9,7 @@ process GATK4_COMBINEGVCFS {
 
     input:
     tuple val(meta), path(vcf), path(vcf_idx)
+    path intervals
     path  fasta
     path  fai
     path  dict
@@ -24,7 +25,7 @@ process GATK4_COMBINEGVCFS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def input_list = vcf.collect{"--variant $it"}.join(' ')
-
+    def interval_command = intervals ? "--intervals $intervals": ""
     def avail_mem = 3072
     if (!task.memory) {
         log.info '[GATK COMBINEGVCFS] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.'
@@ -37,6 +38,7 @@ process GATK4_COMBINEGVCFS {
         $input_list \\
         --output ${prefix}.combined.g.vcf.gz \\
         --reference ${fasta} \\
+        ${interval_command} \\
         --tmp-dir . \\
         $args
 

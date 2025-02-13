@@ -47,10 +47,14 @@ workflow VARIANT_CALLING {
         ch_vcf_list
             .concat(ch_tbi_list).collect(flat: false)
             .map{ vcf, tbi -> [['id': 'cohort'], vcf,tbi] },
+        snp_list.map{meta, path -> path},
         ch_genome_fasta.map{ meta, fasta -> fasta },
         ch_genome_index.map{ meta, fai -> fai },
         ch_genome_dict.map{ meta, dict -> dict }
     )
+
+
+    
 
     BCFTOOLS_INDEX(
         GATK4_COMBINEGVCFS.out.combined_gvcf
