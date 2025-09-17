@@ -15,7 +15,7 @@ workflow VARIANT_CALLING {
 
     main:
 
-     ch_dbsnp = Channel.fromPath("${params.dbsnp}")
+    ch_dbsnp = Channel.fromPath("${params.dbsnp}")
         .map{ file -> [['id': file.getSimpleName()], file] }.collect()
 
     ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")

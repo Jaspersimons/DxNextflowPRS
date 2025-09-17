@@ -5,8 +5,7 @@
 */
 
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { NEXTFLOW_RUN           } from '../modules/local/nextflow/run/main'
-include { PGS_NORM               } from '../modules/local/pgs_norm/main'
+
 
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -15,7 +14,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prs_
 
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
 include { IMPUTE_ALLELES         } from '../subworkflows/local/impute_alleles'
-include { PREPARE_SAMPLESHEET    } from '../subworkflows/local/prepare_samplesheet'
+include { CALC_SCORES            } from '../subworkflows/local/calc_scores'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 
 /*
@@ -30,6 +29,9 @@ workflow PRS {
     ch_samplesheet // channel: samplesheet read in from --input
     main:
 
+
+
+
     ch_genome_fasta = Channel.fromPath("${params.genome_fasta}")
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
@@ -42,13 +44,15 @@ workflow PRS {
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
 
-    ch_ancestry = Channel.fromPath("${params.pgsc_ancestry_db}")
+    ch_chrom = ch_genome_index
+        .map{meta, fai -> fai}
+        .splitCsv(sep: '\t')
+        .map{row -> "${row[0]}"}
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     PRS_INTERVALS()
-
 
     VARIANT_CALLING(
         ch_samplesheet,
@@ -78,59 +82,10 @@ workflow PRS {
 
 
 
-    PREPARE_SAMPLESHEET(
-        ch_vcf
-    )
+    CALC_SCORES(ch_vcf)
 
-    if (params.custom_scoring) {
-        println("YES")
-        // Run pgsc_calc without ancestry database
-        if (params.custom_mu && params.custom_sd) {
-            println("YESYES")
-            NEXTFLOW_RUN (
-                'pgscatalog/pgsc_calc',
-                params.pgsc_calc_opts,
-                PREPARE_SAMPLESHEET.out.samplesheet,
-                params.pgsc_calc_config,
-                [], // no PGS_ID
-                params.assembly_version,
-                params.custom_scoring,
-                [] // no ancestry database
 
-            )
 
-            PGS_NORM(
-                NEXTFLOW_RUN.out.result_dir,
-                params.custom_mu,
-                params.custom_sd
-            )
-
-        // Run pgsc_calc with ancestry database
-        } else {
-            NEXTFLOW_RUN (
-                'pgscatalog/pgsc_calc',
-                params.pgsc_calc_opts,
-                PREPARE_SAMPLESHEET.out.samplesheet,
-                params.pgsc_calc_config,
-                [], // no PGS_ID
-                params.assembly_version,
-                params.custom_scoring,
-                ch_ancestry
-            )
-        }
-
-    } else if (params.PGS_ID) {
-        NEXTFLOW_RUN (
-            'pgscatalog/pgsc_calc',
-            params.pgsc_calc_opts,
-            PREPARE_SAMPLESHEET.out.samplesheet,
-            params.pgsc_calc_config,
-            params.PGS_ID,
-            params.assembly_version,
-            [], //no custom scoring model
-            ch_ancestry
-        )
-    }
 
     //
     // Collate and save software versions

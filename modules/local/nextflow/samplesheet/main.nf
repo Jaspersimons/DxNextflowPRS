@@ -18,7 +18,7 @@ process GENERATE_SAMPLESHEET {
     def chr = chrom ?: ""
     def format = format ?: "pfile"
     """
-    python ${moduleDir}/create_sample_sheet.py \\
+    create_sample_sheet.py \\
         Cohort \\
         ${prefix} \\
         --format ${format}
