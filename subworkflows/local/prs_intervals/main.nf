@@ -32,4 +32,3 @@ workflow PRS_INTERVALS {
     tbi              = GET_PGSC_VCF.out.tbi.collect()
     normalised_model = PGSCATALOG_COMBINE.out.normalised_model
 }
-
