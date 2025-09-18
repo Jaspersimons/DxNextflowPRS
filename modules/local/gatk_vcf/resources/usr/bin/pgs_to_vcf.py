@@ -62,6 +62,9 @@ def main():
         for r in rows:
             chrom = (r.get("hm_chr") or r.get("chr_name") or "").strip()
             if chrom:
+                if build.lower() == "grch38" and 'chr' not in chrom:
+                    
+                    chrom = f"chr{chrom}"
                 contigs.add(str(chrom))
         for c in sorted(contigs, key=lambda x: (x.lstrip("chr") if isinstance(x, str) else x)):
             oh.write(f"##contig=<ID={c}>\n")
@@ -79,9 +82,8 @@ def main():
             chrom = hm_chr or chr_name
             pos = hm_pos or chr_pos
 
-            if not chrom or not pos:
-                # Skip rows without usable coordinates
-                continue
+            if build.lower() == "grch38" and 'chr' not in chrom:
+                chrom = f"chr{chrom}"
 
             try:
                 pos_int = int(pos)

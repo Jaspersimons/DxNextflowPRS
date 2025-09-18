@@ -11,7 +11,6 @@ process BCFTOOLS_MERGE {
     tuple val(meta), path(vcfs), path(tbis)
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(fai)
-    tuple val(meta4), path(bed)
 
     output:
     tuple val(meta), path("*.{bcf,vcf}{,.gz}"), emit: vcf
@@ -26,7 +25,7 @@ process BCFTOOLS_MERGE {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     def input = (vcfs.collect().size() > 1) ? vcfs.sort{ it.name } : vcfs
-    def regions = bed ? "--regions-file $bed" : ""
+    def regions = ""
     def extension = args.contains("--output-type b") || args.contains("-Ob") ? "bcf.gz" :
                     args.contains("--output-type u") || args.contains("-Ou") ? "bcf" :
                     args.contains("--output-type z") || args.contains("-Oz") ? "vcf.gz" :

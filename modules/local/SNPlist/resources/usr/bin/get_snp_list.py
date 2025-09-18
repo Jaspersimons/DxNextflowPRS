@@ -47,7 +47,7 @@ if __name__ == "__main__":
     assembly_version = args.assembly_version # i.e., GRCh38/GRCh37
 
     file_content = pd.read_csv(args.scoring_file, sep='\t',comment='#')
-    chr_colname = "chr_name"
-    pos_colname = "chr_position"
+    chr_colname = "hm_chr"
+    pos_colname = "hm_pos"
 
     positions_to_tsv(file_content, chr_colname, pos_colname, assembly_version, args.prefix)

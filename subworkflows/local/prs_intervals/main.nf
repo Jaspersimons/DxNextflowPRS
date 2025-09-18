@@ -1,40 +1,36 @@
-include { GET_PGSC_SNPLIST   } from '../../../modules/local/SNPlist/pgsc'
+include { BCFTOOLS_INDEX     } from "../../../modules/nf-core/bcftools/index/main"
+include { GET_PGSC_SNPLIST   } from "../../../modules/local/SNPlist/pgsc"
+include { GET_PGSC_VCF       } from "../../../modules/local/gatk_vcf/main"
+include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/main"
 
 
 workflow PRS_INTERVALS {
 
     main:
 
-    if (params.custom_scoring && params.PGS_ID){
-        throw new RuntimeException(
-            "Using both custom_scoring and PGS_ID is currently unsupported"
-        )
-    }
+    ch_PRS_model = Channel.fromPath(params.prs_model)
+        .map{ path -> [['id': path.getSimpleName()], path] }
+        .collect()
 
-    if (params.custom_scoring) {
+    GET_PGSC_SNPLIST(
+        ch_PRS_model,
+        params.assembly_version
+    )
 
-        ch_custom_scoring = Channel.fromPath(params.custom_scoring)
-            .map{ path -> [['id': path.getSimpleName()], path] }
-            .collect()
+    GET_PGSC_VCF(
+        ch_PRS_model,
+        params.assembly_version
+    )
 
-        GET_PGSC_SNPLIST(
-            [],
-            params.assembly_version,
-            ch_custom_scoring
-        )
-
-
-    } else {
-        GET_PGSC_SNPLIST(
-            params.PGS_ID,
-            params.assembly_version,
-            [[],[]]
-        )
-
-    }
+    PGSCATALOG_COMBINE(
+        ch_PRS_model,
+        params.assembly_version
+    )
 
     emit:
-    list = GET_PGSC_SNPLIST.out.list
-    tsv  = GET_PGSC_SNPLIST.out.tsv
-
+    list             = GET_PGSC_SNPLIST.out.list
+    vcf              = GET_PGSC_VCF.out.vcf.collect()
+    tbi              = GET_PGSC_VCF.out.tbi.collect()
+    normalised_model = PGSCATALOG_COMBINE.out.normalised_model
 }
+

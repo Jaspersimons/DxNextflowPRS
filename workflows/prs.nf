@@ -6,16 +6,14 @@
 
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
-
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prs_pipeline'
 
-include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
-include { IMPUTE_ALLELES         } from '../subworkflows/local/impute_alleles'
 include { CALC_SCORES            } from '../subworkflows/local/calc_scores'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
+include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,9 +27,6 @@ workflow PRS {
     ch_samplesheet // channel: samplesheet read in from --input
     main:
 
-
-
-
     ch_genome_fasta = Channel.fromPath("${params.genome_fasta}")
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
@@ -44,11 +39,6 @@ workflow PRS {
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
 
-    ch_chrom = ch_genome_index
-        .map{meta, fai -> fai}
-        .splitCsv(sep: '\t')
-        .map{row -> "${row[0]}"}
-
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
@@ -59,30 +49,12 @@ workflow PRS {
         ch_genome_fasta,
         ch_genome_index,
         ch_genome_dict,
-        PRS_INTERVALS.out.list
+        PRS_INTERVALS.out.list,
+        PRS_INTERVALS.out.vcf.join(PRS_INTERVALS.out.tbi)
     )
 
-    if (params.impute_alt_alleles) {
 
-        IMPUTE_ALLELES(
-            VARIANT_CALLING.out.vcf,
-            VARIANT_CALLING.out.tbi,
-            ch_genome_fasta,
-            ch_genome_index,
-            PRS_INTERVALS.out.tsv
-        )
-
-        ch_vcf = IMPUTE_ALLELES.out.vcf
-
-    } else {
-
-        ch_vcf = VARIANT_CALLING.out.vcf
-
-    }
-
-
-
-    CALC_SCORES(ch_vcf)
+    // CALC_SCORES(VARIANT_CALLING.out.vcf)
 
 
 

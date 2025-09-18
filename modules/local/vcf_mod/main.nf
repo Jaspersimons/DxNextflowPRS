@@ -10,16 +10,20 @@ process REPLACE_INF_VCF {
 
     output:
     tuple val(meta), path("*_rep.vcf.gz"), emit: vcf
+    tuple val(meta), path("*_rep.vcf.gz.tbi"), emit: tbi
+    
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     zcat $vcf | sed 's/Infinity/500/g' | sed 's/inf/500/g' | bgzip > ${prefix}_rep.vcf.gz
+    bcftools index --tbi ${prefix}_rep.vcf.gz
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo "" | bgzip > ${prefix}_rep.vcf.gz
+    touch ${prefix}_rep.vcf.gz.tbi
     """
 }

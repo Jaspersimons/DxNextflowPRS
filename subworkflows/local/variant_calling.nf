@@ -1,7 +1,9 @@
 include { BCFTOOLS_INDEX        } from '../../modules/nf-core/bcftools/index/main'
+include { BCFTOOLS_MERGE        } from '../../modules/nf-core/bcftools/merge/main'
 include { GATK4_COMBINEGVCFS    } from '../../modules/nf-core/gatk4/combinegvcfs/main'
 include { GATK4_GENOTYPEGVCFS   } from '../../modules/nf-core/gatk4/genotypegvcfs/main'
 include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/gatk4/haplotypecaller/main'
+include { REPLACE_INF_VCF       } from "../../modules/local/vcf_mod/main"
 
 workflow VARIANT_CALLING {
 
@@ -10,28 +12,35 @@ workflow VARIANT_CALLING {
     ch_genome_fasta
     ch_genome_index
     ch_genome_dict
-    snp_list
+    ch_snp_list
+    ch_snp_vcf
 
 
     main:
 
+    ch_alleles = ch_snp_vcf.collect()
+
     ch_dbsnp = Channel.fromPath("${params.dbsnp}")
-        .map{ file -> [['id': file.getSimpleName()], file] }.collect()
+        .map{ file -> [['id': file.getSimpleName()], file] }
+        .collect()
 
     ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")
-        .map{ file -> [['id': file.getSimpleName()], file] }.collect()
+        .map{ file -> [['id': file.getSimpleName()], file] }
+        .collect()
 
 
     GATK4_HAPLOTYPECALLER(
         ch_samplesheet
-            .combine(snp_list.map{meta, path -> path})
+            .combine(ch_snp_list.map{_meta, path -> path})
             .map{meta, bam, bai, tsv -> [meta, bam, bai, tsv, []]},
         ch_genome_fasta,
         ch_genome_index,
         ch_genome_dict,
         ch_dbsnp,
-        ch_dbsnp_index
+        ch_dbsnp_index,
+        ch_alleles
     )
+
 
     GATK4_HAPLOTYPECALLER.out.vcf
                    .map{meta, vcf -> vcf}
@@ -43,38 +52,19 @@ workflow VARIANT_CALLING {
                    .collect()
     .set{ch_tbi_list}
 
-    GATK4_COMBINEGVCFS(
+    BCFTOOLS_MERGE(
         ch_vcf_list
             .concat(ch_tbi_list).collect(flat: false)
             .map{ vcf, tbi -> [['id': 'cohort'], vcf,tbi] },
-        snp_list.map{meta, path -> path},
-        ch_genome_fasta.map{ meta, fasta -> fasta },
-        ch_genome_index.map{ meta, fai -> fai },
-        ch_genome_dict.map{ meta, dict -> dict }
+            ch_genome_fasta,
+            ch_genome_index
     )
 
-
-    
-
-    BCFTOOLS_INDEX(
-        GATK4_COMBINEGVCFS.out.combined_gvcf
-    )
-
-
-
-    GATK4_GENOTYPEGVCFS(
-        GATK4_COMBINEGVCFS.out.combined_gvcf
-            .join(BCFTOOLS_INDEX.out.tbi)
-            .map{ meta, vcf, tbi -> [meta, vcf, tbi, [], [] ] },
-        ch_genome_fasta,
-        ch_genome_index,
-        ch_genome_dict,
-        ch_dbsnp,
-        ch_dbsnp_index
+    REPLACE_INF_VCF(
+        BCFTOOLS_MERGE.out.vcf
     )
 
     emit:
-    vcf = GATK4_GENOTYPEGVCFS.out.vcf
-    tbi = GATK4_GENOTYPEGVCFS.out.tbi
-
+    vcf = REPLACE_INF_VCF.out.vcf
+    tbi = REPLACE_INF_VCF.out.tbi
 }
