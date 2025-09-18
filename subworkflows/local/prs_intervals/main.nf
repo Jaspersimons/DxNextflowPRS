@@ -1,4 +1,3 @@
-include { BCFTOOLS_INDEX     } from "../../../modules/nf-core/bcftools/index/main"
 include { GET_PGSC_SNPLIST   } from "../../../modules/local/SNPlist/pgsc"
 include { GET_PGSC_VCF       } from "../../../modules/local/gatk_vcf/main"
 include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/main"

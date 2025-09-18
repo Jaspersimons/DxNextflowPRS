@@ -1,4 +1,3 @@
-include { BCFTOOLS_INDEX        } from '../../modules/nf-core/bcftools/index/main'
 include { BCFTOOLS_MERGE        } from '../../modules/nf-core/bcftools/merge/main'
 include { GATK4_COMBINEGVCFS    } from '../../modules/nf-core/gatk4/combinegvcfs/main'
 include { GATK4_GENOTYPEGVCFS   } from '../../modules/nf-core/gatk4/genotypegvcfs/main'
