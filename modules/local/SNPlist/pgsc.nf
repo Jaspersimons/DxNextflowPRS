@@ -1,5 +1,5 @@
 process GET_PGSC_SNPLIST {
-    tag "SNP list $prefix"
+    tag "$meta.id"
 
     container "oras://community.wave.seqera.io/library/pandas_requests:19b30306ab9be7a6"
 
