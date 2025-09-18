@@ -14,7 +14,8 @@ process PLINK2_VCF {
     tuple val(meta), path("*.pgen")    , emit: pgen
     tuple val(meta), path("*.psam")    , emit: psam
     tuple val(meta), path("*.pvar")    , emit: pvar
-    tuple val(meta), path("*.pvar.zst"), emit: pvar_zst, optional: true
+    tuple val(meta), path("*.pvar.zst"), emit: pvar_zst
+    tuple val(meta), path("*.afreq")   , emit: afreq
     path "versions.yml"                , emit: versions
 
     when:
@@ -29,8 +30,11 @@ process PLINK2_VCF {
         --threads $task.cpus \\
         --memory $mem_mb \\
         $args \\
-        --vcf $vcf \\
+        --vcf $vcf dosage=DS \\
         --out ${prefix}
+
+    
+    plink2 --zst-decompress ${prefix}.pvar.zst > ${prefix}.pvar
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -44,6 +48,7 @@ process PLINK2_VCF {
     touch ${prefix}.pgen
     touch ${prefix}.psam
     touch ${prefix}.pvar
+    touch ${prefix}.pvar.zst
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

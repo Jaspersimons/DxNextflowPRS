@@ -9,7 +9,7 @@ workflow PRS_INTERVALS {
     main:
 
     ch_PRS_model = Channel.fromPath(params.prs_model)
-        .map{ path -> [['id': path.getSimpleName()], path] }
+        .map{ path -> [ ['id': path.getSimpleName()], path ] }
         .collect()
 
     GET_PGSC_SNPLIST(

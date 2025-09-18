@@ -3,23 +3,27 @@ process PGSCATALOG_MATCH {
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pgscatalog-utils:1.4.4--pyhdfd78af_0' :
-        'biocontainers/pgscatalog-utils:2.0.2--pyhdfd78af_0' }'
+        'biocontainers/pgscatalog-utils:2.0.2--pyhdfd78af_0' }" 
         
 
     input:
     tuple val(meta), path(scoring_file)
-    val(assembly_version)
+    tuple val(meta2), path(pvar)
 
     output:
-    tuple val(meta), path("*_normalised.txt.gz"), emit: normalised_model
+    tuple val(meta), path("*_summary.csv"), emit: summary
+    tuple val(meta), path("*.scorefile.gz"), emit: scorefile
     
     script:
-    def prefix = task.ext.prefix ?: meta.id
+    def prefix = task.ext.prefix ?: "Cohort"
+    def args = task.ext.args ?: ""
     """
-    pgscatalog-combine \\
-        -s ${scoring_file} \\
-        -t ${assembly_version} \\
-        -o ${prefix}_normalised.txt.gz
+    pgscatalog-match \\
+        ${args} \\
+        --dataset ${prefix} \\
+        --scorefiles ${scoring_file} \\
+        --target ${pvar} \\
+        --outdir ./ 
     """
 
 }

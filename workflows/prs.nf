@@ -54,7 +54,10 @@ workflow PRS {
     )
 
 
-    // CALC_SCORES(VARIANT_CALLING.out.vcf)
+    CALC_SCORES(
+        VARIANT_CALLING.out.vcf,
+        PRS_INTERVALS.out.normalised_model
+    )
 
 
 
