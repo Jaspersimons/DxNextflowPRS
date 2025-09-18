@@ -13,23 +13,11 @@
 
 ## Introduction
 
-**UMCUGenetics/DxNextflowPRS** is a bioinformatics pipeline that calculates Polygenic Risk Scores on a panel of samples. PRS models can be either provided by the user, or will be downloaded automatically from PGS Catalog based on a PGSC identifier.
+**UMCUGenetics/DxNextflowPRS** 
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 
-
-1. Create a regions file for 'targeted' variant calling from either the custom PRS model or a PGSC model
-2. Read BAM files
-3. Variant Calling (including -ERC BP_RESOLUTION) ([`GATK`](https://gatk.broadinstitute.org/hc/en-us))
-4. Combine gVCF files ([`GATK`](https://gatk.broadinstitute.org/hc/en-us))
-5. Index gVCF file (([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
-6. Genotype gVCF file (Including non-variant sites [`GATK`](https://gatk.broadinstitute.org/hc/en-us))
-7. (Impute missing alt alleles `optional step`)
-8. Prepare samplesheet
-9. Calculate PRS scores ([`pgsc_calc`](https://github.com/PGScatalog/pgsc_calc))
-10. Normalise PRS scores (Custom/[`pgsc_calc`](https://github.com/PGScatalog/pgsc_calc))
-12. QC ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
@@ -50,34 +38,8 @@ Sample2,sample2.bam,sample2.bam.bai
 ```
 
 
-Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
-```bash
-nextflow run DxNextflowPRS/main.nf \
-   --input samplesheet.csv \
-   --outdir <OUTDIR> \
-   --genome_fasta <genome.fa> \
-   --genome_dict <genome.dict> \
-   --dbsnp <dbsnp.vcf.gz> \
-   --PGS_ID "PGS000004"
-```
-
-> [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
-
-## Credits
-
-UMCUGenetics/PRS was originally written by Joris van Steenbrugge.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
 
