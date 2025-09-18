@@ -43,6 +43,7 @@ workflow PRS {
     ch_multiqc_files = Channel.empty()
 
     PRS_INTERVALS()
+    ch_versions = ch_versions.mix(PRS_INTERVALS.out.ch_versions)
 
     VARIANT_CALLING(
         ch_samplesheet,
@@ -52,15 +53,13 @@ workflow PRS {
         PRS_INTERVALS.out.list,
         PRS_INTERVALS.out.vcf.join(PRS_INTERVALS.out.tbi)
     )
-
+    ch_versions = ch_versions.mix(VARIANT_CALLING.out.ch_versions)
 
     CALC_SCORES(
         VARIANT_CALLING.out.vcf,
         PRS_INTERVALS.out.normalised_model
     )
-
-
-
+    ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)  
 
     //
     // Collate and save software versions
@@ -72,7 +71,6 @@ workflow PRS {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
 
     //
     // MODULE: MultiQC

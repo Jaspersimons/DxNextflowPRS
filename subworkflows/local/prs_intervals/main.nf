@@ -6,6 +6,7 @@ include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/m
 workflow PRS_INTERVALS {
 
     main:
+    ch_versions = Channel.empty()
 
     ch_PRS_model = Channel.fromPath(params.prs_model)
         .map{ path -> [ ['id': path.getSimpleName()], path ] }
@@ -25,10 +26,12 @@ workflow PRS_INTERVALS {
         ch_PRS_model,
         params.assembly_version
     )
+    ch_versions = ch_versions.mix(PGSCATALOG_COMBINE.out.versions)
 
     emit:
     list             = GET_PGSC_SNPLIST.out.list
     vcf              = GET_PGSC_VCF.out.vcf.collect()
     tbi              = GET_PGSC_VCF.out.tbi.collect()
     normalised_model = PGSCATALOG_COMBINE.out.normalised_model
+    ch_versions      = ch_versions
 }

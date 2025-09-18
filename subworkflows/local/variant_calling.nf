@@ -14,7 +14,7 @@ workflow VARIANT_CALLING {
 
 
     main:
-
+    ch_versions = Channel.empty()
     ch_alleles = ch_snp_vcf.collect()
 
     ch_dbsnp = Channel.fromPath("${params.dbsnp}")
@@ -37,7 +37,7 @@ workflow VARIANT_CALLING {
         ch_dbsnp_index,
         ch_alleles
     )
-
+    ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
     GATK4_HAPLOTYPECALLER.out.vcf
                    .map{meta, vcf -> vcf}
@@ -56,6 +56,7 @@ workflow VARIANT_CALLING {
             ch_genome_fasta,
             ch_genome_index
     )
+    ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions)
 
     REPLACE_INF_VCF(
         BCFTOOLS_MERGE.out.vcf
@@ -64,4 +65,5 @@ workflow VARIANT_CALLING {
     emit:
     vcf = REPLACE_INF_VCF.out.vcf
     tbi = REPLACE_INF_VCF.out.tbi
+    ch_versions = ch_versions
 }

@@ -3,7 +3,7 @@ process PGSCATALOG_COMBINE {
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pgscatalog-utils:1.4.4--pyhdfd78af_0' :
-        'biocontainers/pgscatalog-utils:2.0.2--pyhdfd78af_0' }"
+        'biocontainers/pgscatalog-utils:1.4.4--pyhdfd78af_0' }"
         
 
     input:
@@ -12,6 +12,7 @@ process PGSCATALOG_COMBINE {
 
     output:
     tuple val(meta), path("*_normalised.txt.gz"), emit: normalised_model
+    path "versions.yml"                         , emit: versions
     
     script:
     def prefix = task.ext.prefix ?: meta.id
@@ -20,6 +21,9 @@ process PGSCATALOG_COMBINE {
         -s ${scoring_file} \\
         -t ${assembly_version} \\
         -o ${prefix}_normalised.txt.gz
+
+
+    echo "pgscatalog-combine: 1.4.4" > versions.yml
     """
 
 }

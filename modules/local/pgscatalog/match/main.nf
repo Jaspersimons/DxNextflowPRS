@@ -3,7 +3,7 @@ process PGSCATALOG_MATCH {
 
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pgscatalog-utils:1.4.4--pyhdfd78af_0' :
-        'biocontainers/pgscatalog-utils:2.0.2--pyhdfd78af_0' }" 
+        'biocontainers/pgscatalog-utils:1.4.4--pyhdfd78af_0' }" 
         
 
     input:
@@ -11,8 +11,9 @@ process PGSCATALOG_MATCH {
     tuple val(meta2), path(pvar)
 
     output:
-    tuple val(meta), path("*_summary.csv"), emit: summary
+    tuple val(meta), path("*_summary.csv") , emit: summary
     tuple val(meta), path("*.scorefile.gz"), emit: scorefile
+    path "versions.yml"                    , emit: versions
     
     script:
     def prefix = task.ext.prefix ?: "Cohort"
@@ -24,6 +25,8 @@ process PGSCATALOG_MATCH {
         --scorefiles ${scoring_file} \\
         --target ${pvar} \\
         --outdir ./ 
+
+    echo "pgscatalog-match: 1.4.4" > versions.yml
     """
 
 }
