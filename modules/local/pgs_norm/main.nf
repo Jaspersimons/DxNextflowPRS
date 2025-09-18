@@ -1,26 +1,25 @@
 process PGS_NORM {
+    tag "$meta.id"
     label 'process_single'
+
     container "oras://community.wave.seqera.io/library/pandas_requests:19b30306ab9be7a6"
 
     input:
-    path(pgsc_calc_outdir)
+    tuple val(meta), path(prs_scores)
     val(mu)
     val(sd)
 
     output:
-    path("normalised_counts.tsv"), emit: tsv
+    path("*_normalised_counts.tsv"), emit: tsv
 
     script:
-    def prs = "${pgsc_calc_outdir}/Cohort/score/aggregated_scores.txt.gz"
+    def prefix = task.ext.prefix ?: meta.id
     """
-
-
-    python ${moduleDir}/normalise_counts.py \\
-        --PRS ${prs} \\
+    normalise_counts.py \\
+        --PRS ${prs_scores} \\
         --mu ${mu} \\
         --SD ${sd} \\
-        -o normalised_counts.tsv
-
+        -o ${prefix}_normalised_counts.tsv
     """
 
 }

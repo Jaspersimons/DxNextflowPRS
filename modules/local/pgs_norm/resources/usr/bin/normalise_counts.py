@@ -26,16 +26,12 @@ def get_args():
 
     return parser.parse_args()
 
-def to_Z(score, mu, SD):
-    return (int(score)-mu)/SD
-
 if __name__ == "__main__":
     args = get_args()
 
     df = pd.read_csv(args.PRS, sep='\t')
 
-    df["AVG_Z"] = (df['AVG'] - args.mu) * args.SD
-    df["SUM_Z"] = (df['SUM'] - args.mu) * args.SD
+    df["SUM_Z"] = (df['SCORE1_SUM'] - args.mu) / args.SD
 
 
     df.to_csv(args.o, sep='\t', index=False)

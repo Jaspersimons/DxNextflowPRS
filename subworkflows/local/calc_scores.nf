@@ -1,7 +1,7 @@
 include { PGSCATALOG_MATCH } from "../../modules/local/pgscatalog/match/main"
+include { PGS_NORM         } from "../../modules/local/pgs_norm/main"
 include { PLINK2_SCORE     } from '../../modules/nf-core/plink2/score/main'
 include { PLINK2_VCF       } from "../../modules/nf-core/plink2/vcf/main"
-
 
 workflow CALC_SCORES {
 
@@ -30,7 +30,13 @@ workflow CALC_SCORES {
     )
 
         
+    PGS_NORM(
+        PLINK2_SCORE.out.score,
+        params.model_mu,
+        params.model_sd
+    )
  
+    
 
 
 
