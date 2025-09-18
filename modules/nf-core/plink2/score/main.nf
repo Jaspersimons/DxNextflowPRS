@@ -27,7 +27,7 @@ process PLINK2_SCORE {
         --threads $task.cpus \\
         --memory $mem_mb \\
         --pfile ${pgen.baseName} \\
-        --score ${scorefile} header-read cols=+scoresums,+denom,+fid no-mean-imputation \\
+        --score ${scorefile} header cols=+scoresums,+denom,+fid no-mean-imputation \\
         --read-freq ${afreq} \\
         $args \\
         --out ${prefix}
