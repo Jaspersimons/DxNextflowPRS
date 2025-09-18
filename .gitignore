@@ -8,4 +8,8 @@ testing*
 *.pyc
 null/
 \#*
-.nf-test.log
+
+# NF-test
+.nf-test/
+.nf-test/*
+.nf-test*
