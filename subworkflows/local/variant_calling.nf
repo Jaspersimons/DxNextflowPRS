@@ -1,7 +1,5 @@
 include { BCFTOOLS_MERGE        } from '../../modules/nf-core/bcftools/merge/main'
-include { GATK4_COMBINEGVCFS    } from '../../modules/nf-core/gatk4/combinegvcfs/main'
-include { GATK4_GENOTYPEGVCFS   } from '../../modules/nf-core/gatk4/genotypegvcfs/main'
-include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/gatk4/haplotypecaller/main'
+include { GATK4_HAPLOTYPECALLER } from '../../modules/local/gatk4/haplotypecaller/main'
 include { REPLACE_INF_VCF       } from "../../modules/local/vcf_mod/main"
 
 workflow VARIANT_CALLING {
