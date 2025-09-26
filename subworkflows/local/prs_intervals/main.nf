@@ -1,5 +1,5 @@
-include { GET_PGSC_SNPLIST   } from "../../../modules/local/SNPlist/pgsc"
-include { GET_PGSC_VCF       } from "../../../modules/local/gatk_vcf/main"
+include { GET_SNPLIST   } from "../../../modules/local/SNPlist/main"
+include { GET_VCF       } from "../../../modules/local/gatk_vcf/main"
 include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/main"
 
 
@@ -12,12 +12,12 @@ workflow PRS_INTERVALS {
         .map{ path -> [ ['id': path.getSimpleName()], path ] }
         .collect()
 
-    GET_PGSC_SNPLIST(
+    GET_SNPLIST(
         ch_PRS_model,
         params.assembly_version
     )
 
-    GET_PGSC_VCF(
+    GET_VCF(
         ch_PRS_model,
         params.assembly_version
     )

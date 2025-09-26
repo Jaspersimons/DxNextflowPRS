@@ -37,8 +37,8 @@ nf_core_version: 3.0.3.dev0
 org_path: null
 repository_type: pipeline
 template:
-  author: Jorisvansteenbrugge
-  description: prs pipeline
+  author: UMCUGenetics
+  description: DxNextflowPRS
   force: true
   is_nfcore: false
   name: DxNextflowPRS
