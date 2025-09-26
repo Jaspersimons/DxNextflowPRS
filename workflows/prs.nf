@@ -3,9 +3,6 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -15,6 +12,7 @@ include { CALC_SCORES            } from '../subworkflows/local/calc_scores'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
 
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -101,7 +99,8 @@ workflow PRS {
         []
     )
 
-    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
