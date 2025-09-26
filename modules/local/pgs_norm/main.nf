@@ -1,25 +1,24 @@
 process PGS_NORM {
-    tag "$meta.id"
-    label 'process_single'
+	tag "${meta.id}"
+	label 'process_single'
 
-    container "ghcr.io/astral-sh/uv:python3.13-bookworm"
-    
-    input:
-    tuple val(meta), path(prs_scores)
-    val(mu)
-    val(sd)
+	container "ghcr.io/astral-sh/uv:python3.13-bookworm"
 
-    output:
-    path("*_normalised_counts.tsv"), emit: tsv
+	input:
+	tuple val(meta), path(prs_scores)
+	val mu
+	val sd
 
-    script:
-    def prefix = task.ext.prefix ?: meta.id
-    """
+	output:
+	path ("*_normalised_counts.tsv"), emit: tsv
+
+	script:
+	def prefix = task.ext.prefix ?: meta.id
+	"""
     normalise_counts.py \\
         --PRS ${prs_scores} \\
         --mu ${mu} \\
         --SD ${sd} \\
         -o ${prefix}_normalised_counts.tsv
     """
-
 }

@@ -21,8 +21,8 @@ def parse_args():
 
 def read_meta(path):
     meta = {}
-    with open(path, "r", newline="") as fh:
-        for line in fh:
+    with open(path, "r", newline="") as file_header:
+        for line in file_header:
             if not line.startswith("#"):  # stop at first non-# (the header line)
                 break
             if line.startswith("###"):    # human-readable banner -> ignore

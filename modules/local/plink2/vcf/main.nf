@@ -1,36 +1,36 @@
 process PLINK2_VCF {
-    tag "$meta.id"
-    label 'process_low'
+	tag "${meta.id}"
+	label 'process_low'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1' :
-        'biocontainers/plink2:2.00a2.3--h712d239_1' }"
+	conda "${moduleDir}/environment.yml"
+	container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+		? 'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1'
+		: 'biocontainers/plink2:2.00a2.3--h712d239_1'}"
 
-    input:
-    tuple val(meta), path(vcf)
+	input:
+	tuple val(meta), path(vcf)
 
-    output:
-    tuple val(meta), path("*.pgen")    , emit: pgen
-    tuple val(meta), path("*.psam")    , emit: psam
-    tuple val(meta), path("*.pvar")    , emit: pvar
-    tuple val(meta), path("*.pvar.zst"), emit: pvar_zst
-    tuple val(meta), path("*.afreq")   , emit: afreq
-    path "versions.yml"                , emit: versions
+	output:
+	tuple val(meta), path("*.pgen"), emit: pgen
+	tuple val(meta), path("*.psam"), emit: psam
+	tuple val(meta), path("*.pvar"), emit: pvar
+	tuple val(meta), path("*.pvar.zst"), emit: pvar_zst
+	tuple val(meta), path("*.afreq"), emit: afreq
+	path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+	when:
+	task.ext.when == null || task.ext.when
 
-    script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def mem_mb = task.memory.toMega()
-    """
+	script:
+	def args = task.ext.args ?: ''
+	def prefix = task.ext.prefix ?: "${meta.id}"
+	def mem_mb = task.memory.toMega()
+	"""
     plink2 \\
-        --threads $task.cpus \\
-        --memory $mem_mb \\
-        $args \\
-        --vcf $vcf dosage=DS \\
+        --threads ${task.cpus} \\
+        --memory ${mem_mb} \\
+        ${args} \\
+        --vcf ${vcf} dosage=DS \\
         --out ${prefix}
 
     
@@ -42,9 +42,9 @@ process PLINK2_VCF {
     END_VERSIONS
     """
 
-    stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    """
+	stub:
+	def prefix = task.ext.prefix ?: "${meta.id}"
+	"""
     touch ${prefix}.pgen
     touch ${prefix}.psam
     touch ${prefix}.pvar

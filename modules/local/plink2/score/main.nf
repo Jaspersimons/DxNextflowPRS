@@ -1,35 +1,36 @@
 process PLINK2_SCORE {
-    tag "$meta.id"
-    label 'process_low'
+	tag "${meta.id}"
+	label 'process_low'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1' :
-        'biocontainers/plink2:2.00a2.3--h712d239_1' }"
+	conda "${moduleDir}/environment.yml"
+	container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+		? 'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1'
+		: 'biocontainers/plink2:2.00a2.3--h712d239_1'}"
 
-    input:
-    tuple val(meta), path(pgen), path(psam), path(pvar), path(afreq)
-    path(scorefile)
+	input:
+	tuple val(meta), path(pgen), path(psam), path(pvar), path(afreq)
+	path scorefile
 
-    output:
-    tuple val(meta), path("*.sscore"), emit: score
-    path("versions.yml")             , emit: versions
+	output:
+	tuple val(meta), path("*.sscore"), emit: score
+	path ("versions.yml"), emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+	when:
+	task.ext.when == null || task.ext.when
 
-    script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def mem_mb = task.memory.toMega() // plink is greedy
-    """
+	script:
+	def args = task.ext.args ?: ''
+	def prefix = task.ext.prefix ?: "${meta.id}"
+	def mem_mb = task.memory.toMega()
+	// plink is greedy
+	"""
     plink2 \\
-        --threads $task.cpus \\
-        --memory $mem_mb \\
+        --threads ${task.cpus} \\
+        --memory ${mem_mb} \\
         --pfile ${pgen.baseName} \\
         --score ${scorefile} header cols=+scoresums,+denom,+fid no-mean-imputation \\
         --read-freq ${afreq} \\
-        $args \\
+        ${args} \\
         --out ${prefix}
 
     cat <<-END_VERSIONS > versions.yml

@@ -40,5 +40,4 @@ if __name__ == "__main__":
 
     df["SUM_Z"] = (df['SCORE1_SUM'] - args.mu) / args.SD
 
-
     df.to_csv(args.o, sep='\t', index=False)
