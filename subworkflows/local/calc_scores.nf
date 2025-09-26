@@ -26,7 +26,7 @@ workflow CALC_SCORES {
 		PLINK2_VCF.out.pgen
 			.join(PLINK2_VCF.out.psam)
 			.join(PLINK2_VCF.out.pvar)
-			\.join(PLINK2_VCF.out.afreq),
+			.join(PLINK2_VCF.out.afreq),
 		PGSCATALOG_MATCH.out.scorefile.map { _meta, path -> path },
 	)
 	ch_versions = ch_versions.mix(PLINK2_SCORE.out.versions)
