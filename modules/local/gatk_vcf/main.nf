@@ -8,7 +8,7 @@ process GET_VCF {
     val(genome_build)
 
     output:
-    tuple val(meta), path("*_genotypes.vcf.gz"), emit: vcf
+    tuple val(meta), path("*_genotypes.vcf"), emit: vcf
 
 
     script:
@@ -23,7 +23,6 @@ process GET_VCF {
     stub:
     def prefix = task.ext.prefix ?: meta.id
     """
-    touch ${prefix}_genotypes.vcf.gz
-    touch ${prefix}_genotypes.vcf.gz.tbi
+    touch ${prefix}_genotypes.vcf
     """
 }

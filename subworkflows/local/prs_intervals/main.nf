@@ -32,8 +32,8 @@ workflow PRS_INTERVALS {
     ch_versions = ch_versions.mix(PGSCATALOG_COMBINE.out.versions)
 
     emit:
-    list             = GET_PGSC_SNPLIST.out.list
-    vcf              = BCFTOOLS_SORT.vcf.collect()
+    list             = GET_SNPLIST.out.list
+    vcf              = BCFTOOLS_SORT.out.vcf.collect()
     tbi              = BCFTOOLS_SORT.out.tbi.collect()
     normalised_model = PGSCATALOG_COMBINE.out.normalised_model
     ch_versions      = ch_versions
