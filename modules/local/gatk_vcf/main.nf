@@ -9,7 +9,6 @@ process GET_VCF {
 
     output:
     tuple val(meta), path("*_genotypes.vcf.gz"), emit: vcf
-    tuple val(meta), path("*_genotypes.vcf.gz.tbi"), emit: tbi
 
 
     script:
@@ -19,8 +18,6 @@ process GET_VCF {
         ${scoring_file} \\
         ${prefix}_genotypes.vcf \\
         --genome-build ${genome_build}
-
-    bcftools sort --write-index=tbi -Oz -o ${prefix}_genotypes.vcf.gz ${prefix}_genotypes.vcf
     """
 
     stub:

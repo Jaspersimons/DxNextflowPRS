@@ -10,7 +10,8 @@ from argparse import ArgumentParser
 
 
 
-def positions_to_tsv(df, chr_colname, pos_colname, assembly_version, prefix):
+def positions_to_tsv(scoring_file, chr_colname, pos_colname, assembly_version, prefix):
+    df = pd.read_csv(scoring_file, sep='\t', comment='#')
 
     if assembly_version == "GRCh38":
         chr_prefix = "chr"
@@ -22,17 +23,18 @@ def positions_to_tsv(df, chr_colname, pos_colname, assembly_version, prefix):
             chrom = row[chr_colname]
             pos = row[pos_colname]
 
-            try:
-                if "chr" in chrom:
-                    chr_prefix = ""
-                    # For GRChr37 the chrom will be read as an int and which causes this error, which we can safely ignore
-            except TypeError:
-                pass
-
-            tsv_fmt = f"{chr_prefix}{chrom}:{pos}-{pos}"
-            if "None" in tsv_fmt:
+            # Skip rows with missing chromosome or position
+            if not chrom or not pos:
                 continue
-            outfile.write(tsv_fmt + "\n")
+
+            # Ensure chromosome has 'chr' prefix
+            chr_prefix = "chr"
+            if "chr" in str(chrom):
+                chr_prefix = ""
+
+            tsv_line = f"{chr_prefix}{chrom}:{pos}-{pos}\n"
+
+            outfile.write(tsv_line)
 
 def get_opts():
     p = ArgumentParser()
@@ -50,10 +52,9 @@ def get_opts():
 
 if __name__ == "__main__":
     args = get_opts()
-    assembly_version = args.assembly_version # i.e., GRCh38/GRCh37
 
-    file_content = pd.read_csv(args.scoring_file, sep='\t',comment='#')
+
     chr_colname = "hm_chr"
     pos_colname = "hm_pos"
 
-    positions_to_tsv(file_content, chr_colname, pos_colname, assembly_version, args.prefix)
+    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.assembly_version, args.prefix)

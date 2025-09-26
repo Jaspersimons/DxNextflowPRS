@@ -1,3 +1,4 @@
+include { BCFTOOLS_SORT } from "../../../modules/nf-core/bcftools/sort/main"
 include { GET_SNPLIST   } from "../../../modules/local/SNPlist/main"
 include { GET_VCF       } from "../../../modules/local/gatk_vcf/main"
 include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/main"
@@ -22,6 +23,8 @@ workflow PRS_INTERVALS {
         params.assembly_version
     )
 
+    BCFTOOLS_SORT(GET_VCF.out.vcf)
+
     PGSCATALOG_COMBINE(
         ch_PRS_model,
         params.assembly_version
@@ -30,8 +33,8 @@ workflow PRS_INTERVALS {
 
     emit:
     list             = GET_PGSC_SNPLIST.out.list
-    vcf              = GET_PGSC_VCF.out.vcf.collect()
-    tbi              = GET_PGSC_VCF.out.tbi.collect()
+    vcf              = BCFTOOLS_SORT.vcf.collect()
+    tbi              = BCFTOOLS_SORT.out.tbi.collect()
     normalised_model = PGSCATALOG_COMBINE.out.normalised_model
     ch_versions      = ch_versions
 }

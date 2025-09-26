@@ -1,4 +1,4 @@
-        process GATK4_HAPLOTYPECALLER {
+process GATK4_HAPLOTYPECALLER {
     tag "$meta.id"
     label 'process_low'
 
