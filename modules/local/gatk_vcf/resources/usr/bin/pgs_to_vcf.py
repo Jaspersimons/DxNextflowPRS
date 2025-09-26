@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script --no-cache
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "argparse",
+#     "pathlib",
+# ]
+# ///
 import argparse, csv, sys
 from pathlib import Path
 

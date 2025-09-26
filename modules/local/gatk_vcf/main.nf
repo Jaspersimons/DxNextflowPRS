@@ -1,7 +1,7 @@
-process GET_PGSC_VCF {
+process GET_VCF {
     tag "GATK VCF $meta.id"
 
-    container "oras://community.wave.seqera.io/library/bcftools_pandas:6f189f4795a546ee" 
+    container "ghcr.io/astral-sh/uv:python3.13-bookworm"
 
     input:
     tuple val(meta), path(scoring_file)

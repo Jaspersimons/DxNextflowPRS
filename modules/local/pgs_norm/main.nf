@@ -3,6 +3,7 @@ process PGS_NORM {
     label 'process_single'
 
     container "oras://community.wave.seqera.io/library/pandas_requests:19b30306ab9be7a6"
+    container "ghcr.io/astral-sh/uv:python3.13-bookworm"
 
     input:
     tuple val(meta), path(prs_scores)
