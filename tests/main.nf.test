@@ -1,0 +1,19 @@
+nextflow_pipeline{
+    name "Test DxNextflowPRS stubbed"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "local"
+    tag "pipeline/local"
+
+    test("Run stubbed pipeline") {
+        options "-stub-run"
+
+        when{
+
+        }
+        then{
+            assert workflow.success
+        }
+    }
+}

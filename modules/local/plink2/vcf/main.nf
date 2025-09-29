@@ -3,9 +3,9 @@ process PLINK2_VCF {
 	label 'process_low'
 
 	conda "${moduleDir}/environment.yml"
-	container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-		? 'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1'
-		: 'biocontainers/plink2:2.00a2.3--h712d239_1'}"
+	container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1':
+        'biocontainers/plink2:2.00a2.3--h712d239_1' }"
 
 	input:
 	tuple val(meta), path(vcf)
@@ -33,13 +33,12 @@ process PLINK2_VCF {
         --vcf ${vcf} dosage=DS \\
         --out ${prefix}
 
-    
     plink2 --zst-decompress ${prefix}.pvar.zst > ${prefix}.pvar
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
-    END_VERSIONS
+	cat <<-END_VERSIONS > versions.yml
+	"${task.process}":
+		plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//')
+	END_VERSIONS
     """
 
 	stub:
@@ -49,10 +48,12 @@ process PLINK2_VCF {
     touch ${prefix}.psam
     touch ${prefix}.pvar
     touch ${prefix}.pvar.zst
+	touch ${prefix}.afreq
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
-    END_VERSIONS
+
+	cat <<-END_VERSIONS > versions.yml
+	"${task.process}":
+		plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//')
+	END_VERSIONS
     """
 }
