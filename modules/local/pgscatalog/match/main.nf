@@ -1,3 +1,4 @@
+
 process PGSCATALOG_MATCH {
 	tag "${meta.id}"
 
@@ -27,4 +28,13 @@ process PGSCATALOG_MATCH {
 
     echo "pgscatalog-match: 1.4.4" > versions.yml
     """
+
+	stub:
+	def prefix = task.ext.prefix ?: "Cohort"
+	"""
+	touch ${prefix}_summary.csv
+	touch ${prefix}.scorefile.gz
+
+	echo "pgscatalog-match: 1.4.4" > versions.yml
+	"""
 }

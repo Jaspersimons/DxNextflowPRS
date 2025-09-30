@@ -38,4 +38,16 @@ process PLINK2_SCORE {
         plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
     END_VERSIONS
     """
+
+
+	stub:
+	def prefix = task.ext.prefix ?: "${meta.id}"
+	"""
+	touch ${prefix}.sscore
+
+	cat <<-END_VERSIONS > versions.yml
+	"${task.process}":
+        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
+	END_VERSIONS
+	"""
 }

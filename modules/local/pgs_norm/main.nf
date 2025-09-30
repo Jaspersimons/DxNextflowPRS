@@ -21,4 +21,10 @@ process PGS_NORM {
         --SD ${sd} \\
         -o ${prefix}_normalised_counts.tsv
     """
+
+	stub:
+	def prefix = task.ext.prefix ?: meta.id
+	"""
+	touch ${prefix}_normalised_counts.tsv
+	"""
 }
