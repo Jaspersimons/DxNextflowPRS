@@ -44,6 +44,6 @@ if __name__ == "__main__":
 
     df = pd.read_csv(args.PRS, sep='\t')
 
-    df["SUM_Z"] = score_to_Z_score(df["SCORE1_SUM"])
+    df["SUM_Z"] = score_to_z_score(df["SCORE1_SUM"], mu=args.mu, SD=args.SD)
 
     df.to_csv(args.o, sep='\t', index=False)
