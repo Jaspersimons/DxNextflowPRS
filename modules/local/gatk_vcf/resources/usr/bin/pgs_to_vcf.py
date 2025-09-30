@@ -21,8 +21,10 @@ def parse_args():
 
 def read_meta(path):
     meta = {}
-    with open(path, "r", newline="") as file_header:
-        for line in file_header:
+    header = None
+    body_lines = []
+    with open(path, "r", newline="") as fh:
+        for line in fh:
             if not line.startswith("#"):  # stop at first non-# (the header line)
                 header = line.rstrip("\n")
                 break
@@ -31,9 +33,11 @@ def read_meta(path):
             if "=" in line:
                 key, val = line.strip()[1:].split("=", 1)
                 meta[key.strip()] = val.strip()
-    return meta, header
+        # store the remaining lines (the body)
+        body_lines = fh.readlines()
+    return meta, header, body_lines
 
-def build_info_fields(row):
+def build_info_fields(row, pgsid):
     # Build INFO
     weight = (row.get("effect_weight") or "").strip()
     eaf = (row.get("allelefrequency_effect") or "").strip()
@@ -42,7 +46,6 @@ def build_info_fields(row):
     hm_match_pos = (row.get("hm_match_pos") or "").strip()
     info_parts = [f"PGSID={pgsid}"]
     if weight:
-        # ensure numeric formatting
         try:
             info_parts.append(f"EFFECT_WEIGHT={float(weight)}")
         except ValueError:
@@ -62,15 +65,15 @@ def build_info_fields(row):
 
 def main():
     args = parse_args()
-    meta, heaer = read_meta(args.input)
+    meta, header, body = read_meta(args.input)
     pgsid = args.pgsid or meta.get("pgs_id", "PGS_UNKNOWN")
     build = args.genome_build or meta.get("genome_build", "unknown")
 
     # Open IO
     out = sys.stdout if args.output == "-" else open(args.output, "w", newline="")
-        # Dialect: TSV (PGS scoring files are tab-delimited)
-        cols = header.split("\t")
-        reader = csv.DictReader([header] + fh.readlines(), delimiter="\t")
+    with out as oh:
+        # TSV reader
+        reader = csv.DictReader([header] + body, delimiter="\t")
 
         # collect contigs to emit header contig lines later
         contigs = set()
@@ -90,7 +93,7 @@ def main():
         # Peek through to gather contigs (we need to iterate twice or buffer)
         rows = list(reader)
         for row in rows:
-            chrom = row.get("hm_chr").strip()
+            chrom = (row.get("hm_chr") or "").strip()
             if chrom:
                 if build.lower() == "grch38" and 'chr' not in chrom:
                     chrom_prefix = "chr"
@@ -105,8 +108,10 @@ def main():
         # Emit records
         for i, row in enumerate(rows, start=1):
             # Choose harmonized coords if available, else original
-            chrom = chrom_prefix + row.get("hm_chr").strip()
-            pos = row.get("hm_pos").strip()
+            chrom = (row.get("hm_chr") or "").strip()
+            pos = (row.get("hm_pos") or "").strip()
+            if build.lower() == "grch38" and chrom and 'chr' not in chrom:
+                chrom = f"chr{chrom}"
 
             try:
                 pos_int = int(pos)
@@ -120,11 +125,11 @@ def main():
             if not ref or not alt or ref == alt:
                 continue
 
-            rsid = r.get("hm_rsID", r.get("rsID", ".")).strip() or "."
+            rsid = (row.get("hm_rsID") or row.get("rsID") or ".").strip() or "."
             qual = "."
             filt = "PASS"
 
-            info = build_info_fields(row)
+            info = build_info_fields(row, pgsid)
 
             # Write VCF line
             oh.write(f"{chrom}\t{pos_int}\t{rsid}\t{ref}\t{alt}\t{qual}\t{filt}\t{info}\n")
