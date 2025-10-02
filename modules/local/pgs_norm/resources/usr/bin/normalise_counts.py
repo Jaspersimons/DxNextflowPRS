@@ -26,7 +26,7 @@ def get_args():
         type=float
     )
     parser.add_argument(
-        "-o",
+        "-o", "--output",
         help="Output file",
         required=True
     )
@@ -46,4 +46,4 @@ if __name__ == "__main__":
 
     df["SUM_Z"] = score_to_z_score(df["SCORE1_SUM"], mu=args.mu, SD=args.SD)
 
-    df.to_csv(args.o, sep='\t', index=False)
+    df.to_csv(args.output, sep='\t', index=False)
