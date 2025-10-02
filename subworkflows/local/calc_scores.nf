@@ -1,7 +1,7 @@
 include { PGSCATALOG_MATCH } from "../../modules/local/pgscatalog/match/main"
 include { PGS_NORM } from "../../modules/local/pgs_norm/main"
-include { PLINK2_SCORE } from '../../modules/local/plink2/score/main'
-include { PLINK2_VCF } from "../../modules/local/plink2/vcf/main"
+include { PLINK2_SCORE } from '../../modules/nf-core/plink2/score/main'
+include { PLINK2_VCF } from "../../modules/nf-core/plink2/vcf/main"
 
 workflow CALC_SCORES {
 	take:
