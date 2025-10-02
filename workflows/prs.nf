@@ -37,11 +37,8 @@ workflow PRS {
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
 
     PRS_INTERVALS()
-    ch_versions = ch_versions.mix(PRS_INTERVALS.out.ch_versions)
 
     VARIANT_CALLING(
         ch_samplesheet,
@@ -51,17 +48,23 @@ workflow PRS {
         PRS_INTERVALS.out.list,
         PRS_INTERVALS.out.vcf.join(PRS_INTERVALS.out.tbi)
     )
-    ch_versions = ch_versions.mix(VARIANT_CALLING.out.ch_versions)
 
     CALC_SCORES(
         VARIANT_CALLING.out.vcf,
         PRS_INTERVALS.out.normalised_model
     )
-    ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)  
+
 
     //
     // Collate and save software versions
     //
+    //
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+    ch_versions = ch_versions.mix(PRS_INTERVALS.out.ch_versions)
+    ch_versions = ch_versions.mix(VARIANT_CALLING.out.ch_versions)
+    ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)
+
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",

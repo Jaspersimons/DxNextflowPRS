@@ -9,18 +9,15 @@ workflow CALC_SCORES {
 	ch_normalised_model
 
 	main:
-	ch_versions = Channel.empty()
 
 	PLINK2_VCF(
 		ch_vcf
 	)
-	ch_versions = ch_versions.mix(PLINK2_VCF.out.versions)
 
 	PGSCATALOG_MATCH(
 		ch_normalised_model,
 		PLINK2_VCF.out.pvar_zst,
 	)
-	ch_versions = ch_versions.mix(PGSCATALOG_MATCH.out.versions)
 
 	PLINK2_SCORE(
 		PLINK2_VCF.out.pgen
@@ -29,13 +26,19 @@ workflow CALC_SCORES {
 			.join(PLINK2_VCF.out.afreq),
 		PGSCATALOG_MATCH.out.scorefile.map { _meta, path -> path },
 	)
-	ch_versions = ch_versions.mix(PLINK2_SCORE.out.versions)
 
 	PGS_NORM(
 		PLINK2_SCORE.out.score,
 		params.model_mu,
 		params.model_sd,
 	)
+
+
+	// Collate software versions
+	ch_versions = Channel.empty()
+	ch_versions = ch_versions.mix(PLINK2_VCF.out.versions)
+	ch_versions = ch_versions.mix(PGSCATALOG_MATCH.out.versions)
+	ch_versions = ch_versions.mix(PLINK2_SCORE.out.versions)
 
 	emit:
 	ch_versions = ch_versions
