@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process PGS_NORM"
+    script "../main.nf"
+    process "PGS_NORM"
+
+
+    tag "modules"
+    tag "modules/local"
+    tag "local"
+    tag "normalisation"
+    tag "modules/PGS_NORM"
+
+    test("Test two sample PGS normalisation") {
+
+        when{
+            process {
+                """
+                input[0] = [
+                    [id: "test_panel"],
+                    file("https://raw.githubusercontent.com/UMCUGenetics/DxNextflowTestData/main/DxNextflowPRS/raw_PGS.sscores", checkIfExists: true)
+                ]
+                input[1] = Channel.value("-0.424") // mu
+                input[2] = Channel.value("0.611") // sd
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.tsv).match() }
+            )
+        }
+    }
+
+}

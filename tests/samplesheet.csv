@@ -1,0 +1,2 @@
+sample,bam,bai
+NA12878,https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/bam/NA12878.chr22.bam,https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/bam/NA12878.chr22.bam.bai
