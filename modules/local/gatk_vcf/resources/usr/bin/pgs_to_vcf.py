@@ -13,28 +13,29 @@ def parse_args():
     p = argparse.ArgumentParser(
         description="Convert a PGS Catalog scoring CSV/TSV to a VCF (REF=other_allele, ALT=effect_allele)."
     )
-    p.add_argument("input", help="Input PGS scoring file (tab-delimited)")
-    p.add_argument("output", help="Output VCF path ('-' for stdout)")
+    p.add_argument("input", help="Input PGS scoring file (tab-delimited)", type=argparse.FileType('r'))
+    p.add_argument("output", help="Output VCF path ('-' for stdout)", type=argparse.FileType('w', encoding='UTF-8'))
     p.add_argument("--pgsid", help="Override PGS ID for header/INFO (falls back to value parsed from metadata)")
     p.add_argument("--genome-build", help="Override genome build for header (e.g. GRCh37/GRCh38)")
     return p.parse_args()
 
-def read_meta(path):
+def read_meta(fh):
     meta = {}
     header = None
     body_lines = []
-    with open(path, "r", newline="") as fh:
-        for line in fh:
-            if not line.startswith("#"):  # stop at first non-# (the header line)
-                header = line.rstrip("\n")
-                break
-            if line.startswith("###"):    # human-readable banner -> ignore
-                continue
-            if "=" in line:
-                key, val = line.strip()[1:].split("=", 1)
-                meta[key.strip()] = val.strip()
-        # store the remaining lines (the body)
-        body_lines = fh.readlines()
+
+    for line in fh:
+        if not line.startswith("#"):  # stop at first non-# (the header line)
+            header = line.rstrip("\n")
+            break
+        if line.startswith("###"):    # human-readable banner -> ignore
+            continue
+        if "=" in line:
+            key, val = line.strip()[1:].split("=", 1)
+            meta[key.strip()] = val.strip()
+    # store the remaining lines (the body)
+    body_lines = fh.readlines()
+
     return meta, header, body_lines
 
 def build_info_fields(row, pgsid):
@@ -70,8 +71,7 @@ def main():
     build = args.genome_build or meta.get("genome_build", "unknown")
 
     # Open IO
-    out = sys.stdout if args.output == "-" else open(args.output, "w", newline="")
-    with out as oh:
+    with args.output as oh:
         # TSV reader
         reader = csv.DictReader([header] + body, delimiter="\t")
 
