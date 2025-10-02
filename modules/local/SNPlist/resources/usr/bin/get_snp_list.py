@@ -10,13 +10,8 @@ from argparse import ArgumentParser
 
 
 
-def positions_to_tsv(scoring_file, chr_colname, pos_colname, assembly_version, prefix):
+def positions_to_tsv(scoring_file, chr_colname, pos_colname, prefix):
     df = pd.read_csv(scoring_file, sep='\t', comment='#')
-
-    if assembly_version == "GRCh38":
-        chr_prefix = "chr"
-    else:
-        chr_prefix = ""
 
     with open(f"{prefix}_snplist.list", 'w') as outfile:
         for index, row in df.iterrows():
@@ -44,9 +39,6 @@ def get_opts():
     p.add_argument("--prefix",
                    help="Prefix for output files",
                    required=True)
-    p.add_argument("--assembly_version",
-                   help="Genome build version.",
-                   required=True)
 
     return p.parse_args()
 
@@ -57,4 +49,4 @@ if __name__ == "__main__":
     chr_colname = "hm_chr"
     pos_colname = "hm_pos"
 
-    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.assembly_version, args.prefix)
+    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix)

@@ -5,7 +5,6 @@ process GET_SNPLIST {
 
 	input:
 	tuple val(meta), path(scoring_file)
-	val assembly_version
 
 	output:
 	tuple val(meta), path("*_snplist.list"), emit: list
@@ -15,9 +14,7 @@ process GET_SNPLIST {
 	"""
     get_snp_list.py \\
         --scoring_file ${scoring_file} \\
-        --assembly_version ${assembly_version} \\
         --prefix ${prefix}
-
 
     export prefix=${prefix}
     """

@@ -13,8 +13,7 @@ workflow PRS_INTERVALS {
 		.collect()
 
 	GET_SNPLIST(
-		ch_PRS_model,
-		params.assembly_version,
+		ch_PRS_model
 	)
 
 	GET_VCF(

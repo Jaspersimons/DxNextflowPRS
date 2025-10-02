@@ -19,7 +19,6 @@ nextflow_process {
                     [id: "BCAC_313"],
                     file("${projectDir}/assets/models/BCAC_313_PRS_GRCh38.txt", checkIfExists: true)
                 ]
-                input[1] = Channel.value("GRCh38")
                 """
             }
         }
