@@ -1,0 +1,33 @@
+nextflow_workflow {
+    name "Test PRS score calculation"
+    script "../main.nf"
+    workflow "CALC_SCORES"
+    
+
+
+    tag "subworkflows"
+    tag "subworkflows/local"
+    tag "subworkflows/calc_scores"
+    tag "local"
+
+    test("Validate scoring workflow"){
+
+        
+        
+        when {
+            workflow {
+            """
+                input[0] = Channel.fromPath("/Users/jsteenbr/tools/DxNextflowPRS/subworkflows/local/calc_scores/test.vcf")  //ch_vcf
+                    .map{ file -> [[id: file.getSimpleName()], file] }
+                input[1] = [[id: "model"], file("/Users/jsteenbr/tools/DxNextflowPRS/assets/test-data/norm_test_model_subworkflow.txt.gz")]
+            """
+            }
+        }
+        then {
+            assertAll (
+                {assert workflow.success}
+            )
+        }
+    }
+}
+
