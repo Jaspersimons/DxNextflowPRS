@@ -1,0 +1,24 @@
+###PGS CATALOG SCORING FILE - see https://www.pgscatalog.org/downloads/#dl_ftp_scoring for additional information
+#format_version=2.0
+##POLYGENIC SCORE (PGS) INFORMATION
+#pgs_id=PGS00TEST
+#pgs_name=TEST_BC
+#trait_reported=Breast cancer
+#trait_mapped=breast carcinoma
+#trait_efo=EFO_0000305
+#genome_build=GRCh37
+#variants_number=4
+#weight_type=NR
+##SOURCE INFORMATION
+#pgp_id=PGP000002
+#citation=Mavaddat N et al. Am J Hum Genet (2018). doi:10.1016/j.ajhg.2018.11.002
+##HARMONIZATION DETAILS
+#HmPOS_build=GRCh38
+#HmPOS_date=2022-07-29
+#HmPOS_match_chr={"True": null, "False": null}
+#HmPOS_match_pos={"True": null, "False": null}
+chr_name	chr_position	effect_allele	other_allele	effect_weight	allelefrequency_effect	hm_source	hm_rsID	hm_chr	hm_pos	hm_inferOtherAllele
+1	100880328	T	A	0.0373	0.4097	liftover		1	100414772	
+1	10566215	G	A	-0.0586	0.329	liftover		1	10506158	
+1	110198129	C	CAAA	0.0458	0.7755	liftover		1	109655507	
+1	114445880	A	G	0.0621	0.1664	liftover		1	113903258	
