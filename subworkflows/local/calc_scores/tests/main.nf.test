@@ -17,9 +17,8 @@ nextflow_workflow {
         when {
             workflow {
             """
-                input[0] = Channel.fromPath("/Users/jsteenbr/tools/DxNextflowPRS/subworkflows/local/calc_scores/test.vcf")  //ch_vcf
-                    .map{ file -> [[id: file.getSimpleName()], file] }
-                input[1] = [[id: "model"], file("/Users/jsteenbr/tools/DxNextflowPRS/assets/test-data/norm_test_model_subworkflow.txt.gz")]
+                input[0] = [[id: "vcf"], file("${projectDir}/assets/test-data/test.vcf", checkIfExists: true)]  //ch_vcf
+                input[1] = [[id: "model"], file("${projectDir}/assets/test-data/norm_test_model_subworkflow.txt.gz", checkIfExists: true)]
             """
             }
         }
