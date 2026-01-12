@@ -41,5 +41,9 @@ workflow CALC_SCORES {
 	ch_versions = ch_versions.mix(PLINK2_SCORE.out.versions)
 
 	emit:
-	ch_versions = ch_versions
+	ch_versions       = ch_versions
+    ch_score_norm     = PGS_NORM.out.tsv
+    ch_score_variants = PGSCATALOG_MATCH.out.log
+    ch_score          = PGSCATALOG_MATCH.out.scorefile
+    ch_score_summary  = PGSCATALOG_MATCH.out.summary
 }
