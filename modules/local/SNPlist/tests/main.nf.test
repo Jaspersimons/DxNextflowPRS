@@ -12,7 +12,7 @@ nextflow_process {
 
     test("Test BCAC_313 SNP list") {
 
-        when{
+        when {
             process {
                 """
                 input[0] = [
