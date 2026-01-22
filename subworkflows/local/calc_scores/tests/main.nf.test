@@ -1,5 +1,5 @@
 nextflow_workflow {
-    name "Test PRS score calculation"
+    name "Test Subworkflow PRS score calculation"
     script "../main.nf"
     workflow "CALC_SCORES"
     
