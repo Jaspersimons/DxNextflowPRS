@@ -1,0 +1,19 @@
+{
+    "Test VCF INF": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "vcf"
+                    },
+                    "vcf_rep.vcf.gz:md5,674338b65abe6adb7bb90791bc435a1e"
+                ]
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-01-22T15:03:53.316962"
+    }
+}

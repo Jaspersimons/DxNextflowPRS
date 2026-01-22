@@ -1,0 +1,30 @@
+nextflow_process {
+    name "Test PGScatalog-combine"
+    script "../main.nf"
+    process "PGSCATALOG_COMBINE"
+
+    tag "modules/local"
+
+
+    test("Test Correct model formatting "){
+        when{
+            process{
+                """
+                input[0] = [[id: 'model'],
+                    file("${projectDir}/assets/models/BCAC_313_PRS_GRCh38.txt",
+                    checkifExists: true)]
+                input[1] = channel.value("GRCh38")
+                """
+            }
+
+            then {
+                // def norm_csv = path(process.out.normalised_model[0][1]).csv(decompress: true)
+                // println norm_csv
+                assertAll(
+                    {assert process.success},
+                    // {assert snapshot(norm_csv.text.md5sum()).match()}
+                )
+            }
+        }
+    }
+}

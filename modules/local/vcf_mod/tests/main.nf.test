@@ -1,0 +1,28 @@
+nextflow_process {
+    name "Test Process REPLACE_INF_VCF"
+    script "../main.nf"
+    process "REPLACE_INF_VCF"
+
+    tag "modules"
+    tag "modules/local"
+    tag "modules/REPLACE_INF_VCF"
+    tag "local"
+
+    test("Test VCF INF") {
+
+        when {
+            process {
+               """
+                input[0] = [[id: "vcf"], file("${projectDir}/assets/test-data/test_inf.vcf.gz", checkIfExists: true)]
+               """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.vcf).match() }
+            )
+        }
+    }
+}
