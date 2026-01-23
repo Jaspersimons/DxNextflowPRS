@@ -1,0 +1,34 @@
+nextflow_workflow {
+    name "Test Subworkflow PRS intervals"
+    script "../main.nf"
+    workflow "PRS_INTERVALS"
+
+    tag "subworkflows"
+    tag "subworkflows/local"
+    tag "subworkflows/prs_intervals"
+    tag "prs_intervals"
+    tag "local"
+
+    test("Validate PRS interval creation") {
+        
+        when {
+            params {
+                prs_model = "${projectDir}/assets/models/BCAC_313_PRS_GRCh38.txt"
+                outdir = "outdir"
+            }
+
+            workflow{ }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcf,
+                    workflow.out.list,
+                    workflow.out.normalised_model
+                    ).match() }
+            )
+        }
+    }
+}
