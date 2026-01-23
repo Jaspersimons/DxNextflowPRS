@@ -6,12 +6,12 @@ include { PGSCATALOG_COMBINE } from "../../../modules/local/pgscatalog/combine/m
 
 workflow PRS_INTERVALS {
 
+    take:
+
+    ch_PRS_model
+    
 	main:
-
-	ch_PRS_model = Channel.fromPath(params.prs_model)
-		.map { path -> [['id': path.getSimpleName()], path] }
-		.collect()
-
+    
 	GET_SNPLIST(
 		ch_PRS_model
 	)
@@ -28,6 +28,8 @@ workflow PRS_INTERVALS {
 		params.assembly_version,
 	)
 
+    
+    
 	// Collate software versions
 	ch_versions = Channel.empty()
 	ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions)

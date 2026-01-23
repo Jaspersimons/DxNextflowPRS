@@ -16,7 +16,11 @@ nextflow_workflow {
                 prs_model = "${projectDir}/assets/models/BCAC_313_PRS_GRCh38.txt"
             }
 
-            workflow{ }
+            workflow{
+                """
+                input[0] = [[id: "BCAC_313_PRS_GRCh38"], file(params.prs_model, checkIfExists: true)]
+                """
+            }
         }
 
         then {

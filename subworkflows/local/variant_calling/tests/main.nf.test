@@ -1,0 +1,48 @@
+nextflow_workflow {
+    name "Test Subworkflow Variant calling"
+    script "../main.nf"
+
+    workflow "VARIANT_CALLING"
+
+    tag "subworkflows"
+    tag "subworkflows/local"
+    tag "subworkflows/variant_calling"
+    tag "variant_calling"
+    tag "local"
+
+    test("Validate Variant calling subworkflow") {
+        config "./test.config"
+            
+        when {
+            workflow {
+                """
+                input[0] = [
+                [id: "sample1"],
+                    file("https://github.com/nf-core/test-datasets/raw/refs/heads/modules/data/genomics/homo_sapiens/illumina/bam/test.paired_end.sorted.bam"),
+                    file("https://github.com/nf-core/test-datasets/raw/refs/heads/modules/data/genomics/homo_sapiens/illumina/bam/test.paired_end.sorted.bam.bai")] 
+                input[1] = [[id: "genome_fa"],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta", checkIfExists: true)]
+                input[2] = [[id: "genome_fai"],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.fasta.fai", checkIfExists: true)]
+                input[3] = [[id: "genome_dict"],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/genome.dict", checkIfExists: true)]
+                input[4] = [[id: "dbsnp"],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz")]
+                input[5] = [[id: "dbsnp"],
+                    file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/modules/data/genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz.tbi")]
+                input[6] = [[id: "snp_list"],
+                    file("${baseDir}/assets/test-data/BCAC_313_PRS_GRCh38_snplist.list", checkIfExists: true)]
+                input[7] = [[id: "snp_vcf"],
+                    file("${baseDir}/assets/test-data/BCAC_313_PRS_GRCh38_genotypes_sorted.vcf.gz", checkIfExists: true)]
+                
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success }
+            )
+        }
+    }
+}

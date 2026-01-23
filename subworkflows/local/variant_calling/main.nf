@@ -1,6 +1,6 @@
-include { BCFTOOLS_MERGE } from '../../modules/nf-core/bcftools/merge/main'
-include { GATK4_HAPLOTYPECALLER } from '../../modules/nf-core/gatk4/haplotypecaller/main'
-include { REPLACE_INF_VCF } from "../../modules/local/vcf_mod/main"
+include { BCFTOOLS_MERGE } from '../../../modules/nf-core/bcftools/merge/main'
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { REPLACE_INF_VCF } from "../../../modules/local/vcf_mod/main"
 
 workflow VARIANT_CALLING {
 	take:
@@ -8,24 +8,25 @@ workflow VARIANT_CALLING {
 	ch_genome_fasta
 	ch_genome_index
 	ch_genome_dict
+    ch_dbsnp
+    ch_dbsnp_index
 	ch_snp_list
 	ch_snp_vcf
 
 	main:
 
+    println "HIERZO"
 	ch_alleles = ch_snp_vcf.collect()
 
-	ch_dbsnp = Channel.fromPath("${params.dbsnp}")
-		.map { file -> [['id': file.getSimpleName()], file] }
-		.collect()
-
-	ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")
-		.map { file -> [['id': file.getSimpleName()], file] }
-		.collect()
-
-
+    println "samplesheet: ${ch_samplesheet}"
+    println "snp_list: ${ch_snp_list}"
+    println "snp_vcf: ${ch_snp_vcf}"
+    
 	GATK4_HAPLOTYPECALLER(
-		ch_samplesheet.combine(ch_snp_list.map { _meta, path -> path }).map { meta, bam, bai, tsv -> [meta, bam, bai, tsv, []] },
+		ch_samplesheet.combine(
+            ch_snp_list
+                .map { _meta, path -> path })
+            .map { meta, bam, bai, tsv -> [meta, bam, bai, tsv, []] },
 		ch_genome_fasta,
 		ch_genome_index,
 		ch_genome_dict,
@@ -33,6 +34,8 @@ workflow VARIANT_CALLING {
 		ch_dbsnp_index,
 		ch_alleles,
 	)
+
+    println "HAP: GATK4_HAPLOTYPECALLER.out.vcf"
 
 	GATK4_HAPLOTYPECALLER.out.vcf
 		.map { meta, vcf -> vcf }

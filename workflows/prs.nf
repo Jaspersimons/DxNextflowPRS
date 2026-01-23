@@ -10,7 +10,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prs_
 
 include { CALC_SCORES            } from '../subworkflows/local/calc_scores/main'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
-include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling'
+include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling/main'
 
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 /*
@@ -37,14 +37,28 @@ workflow PRS {
         .map{ file -> [file.getSimpleName(), file] }
         .collect()
 
+    ch_dbsnp = Channel.fromPath("${params.dbsnp}")
+		.map { file -> [['id': file.getSimpleName()], file] }
+		.collect()
+    
+    ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")
+		.map { file -> [['id': file.getSimpleName()], file] }
+		.collect()
 
-    PRS_INTERVALS()
+    ch_PRS_model = Channel.fromPath(params.prs_model)
+		.map { path -> [['id': path.getSimpleName()], path] }
+		.collect()
+    
+    
+    PRS_INTERVALS(ch_PRS_model)
 
     VARIANT_CALLING(
         ch_samplesheet,
         ch_genome_fasta,
         ch_genome_index,
         ch_genome_dict,
+        ch_dbsnp,
+        ch_dbsnp_index,
         PRS_INTERVALS.out.list,
         PRS_INTERVALS.out.vcf.join(PRS_INTERVALS.out.tbi)
     )
