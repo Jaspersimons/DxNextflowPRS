@@ -14,7 +14,6 @@ nextflow_workflow {
         when {
             params {
                 prs_model = "${projectDir}/assets/models/BCAC_313_PRS_GRCh38.txt"
-                outdir = "outdir"
             }
 
             workflow{ }
