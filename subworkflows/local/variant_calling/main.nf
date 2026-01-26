@@ -15,6 +15,7 @@ workflow VARIANT_CALLING {
 
 	main:
 
+    
     println "HIERZO"
 	ch_alleles = ch_snp_vcf.collect()
 
