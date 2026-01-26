@@ -1,6 +1,6 @@
-include { BCFTOOLS_MERGE } from '../../../modules/nf-core/bcftools/merge/main'
+include { BCFTOOLS_MERGE        } from '../../../modules/nf-core/bcftools/merge/main'
 include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
-include { REPLACE_INF_VCF } from "../../../modules/local/vcf_mod/main"
+include { REPLACE_INF_VCF       } from "../../../modules/local/vcf_mod/main"
 
 workflow VARIANT_CALLING {
 	take:
@@ -15,13 +15,7 @@ workflow VARIANT_CALLING {
 
 	main:
 
-    
-    println "HIERZO"
 	ch_alleles = ch_snp_vcf.collect()
-
-    println "samplesheet: ${ch_samplesheet}"
-    println "snp_list: ${ch_snp_list}"
-    println "snp_vcf: ${ch_snp_vcf}"
     
 	GATK4_HAPLOTYPECALLER(
 		ch_samplesheet.combine(
@@ -36,15 +30,13 @@ workflow VARIANT_CALLING {
 		ch_alleles,
 	)
 
-    println "HAP: GATK4_HAPLOTYPECALLER.out.vcf"
-
 	GATK4_HAPLOTYPECALLER.out.vcf
-		.map { meta, vcf -> vcf }
+		.map { _meta, vcf -> vcf }
 		.collect()
 		.set { ch_vcf_list }
 
 	GATK4_HAPLOTYPECALLER.out.tbi
-		.map { meta, tbi -> tbi }
+		.map { _meta, tbi -> tbi }
 		.collect()
 		.set { ch_tbi_list }
 
