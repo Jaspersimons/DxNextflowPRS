@@ -14,7 +14,6 @@ process GATK4_HAPLOTYPECALLER {
 	tuple val(meta4), path(dict)
 	tuple val(meta5), path(dbsnp)
 	tuple val(meta6), path(dbsnp_tbi)
-	tuple val(meta7), path(alleles), path(alleles_tbi)
 
 	output:
 	tuple val(meta), path("*.vcf.gz"), emit: vcf
@@ -30,7 +29,6 @@ process GATK4_HAPLOTYPECALLER {
 	def prefix = task.ext.prefix ?: "${meta.id}"
 	def dbsnp_command = dbsnp ? "--dbsnp ${dbsnp}" : ""
 	def interval_command = intervals ? "--intervals ${intervals}" : ""
-	def alleles_command = alleles ? "--alleles ${alleles}" : ""
 	def dragstr_command = dragstr_model ? "--dragstr-params-path ${dragstr_model}" : ""
 	def bamout_command = args.contains("--bam-writer-type") ? "--bam-output ${prefix.replaceAll('.g\\s*$', '')}.realigned.bam" : ""
 
@@ -50,7 +48,6 @@ process GATK4_HAPLOTYPECALLER {
         --native-pair-hmm-threads ${task.cpus} \\
         ${dbsnp_command} \\
         ${interval_command} \\
-        ${alleles_command} \\
         ${dragstr_command} \\
         ${bamout_command} \\
         --tmp-dir . \\

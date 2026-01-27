@@ -10,13 +10,16 @@ from argparse import ArgumentParser
 
 
 
-def positions_to_tsv(scoring_file, chr_colname, pos_colname, prefix):
+def positions_to_tsv(scoring_file, chr_colname, pos_colname, prefix, flank=100):
     df = pd.read_csv(scoring_file, sep='\t', comment='#')
 
     with open(f"{prefix}_snplist.list", 'w') as outfile:
         for index, row in df.iterrows():
             chrom = row[chr_colname]
-            pos = row[pos_colname]
+            pos = int(row[pos_colname])
+
+            start = pos-flank
+            end = pos+flank
 
             # Skip rows with missing chromosome or position
             if not chrom or not pos:
@@ -27,7 +30,7 @@ def positions_to_tsv(scoring_file, chr_colname, pos_colname, prefix):
             if "chr" in str(chrom):
                 chr_prefix = ""
 
-            tsv_line = f"{chr_prefix}{chrom}:{pos}-{pos}\n"
+            tsv_line = f"{chr_prefix}{chrom}:{str(start)}-{str(end)}\n"
 
             outfile.write(tsv_line)
 
@@ -36,6 +39,9 @@ def get_opts():
     p.add_argument("--scoring_file",
                    help="Custom scoring file, alternative for PGSID",
                    required=True)
+    p.add_argument("--flank",
+                   help="Flanking region for each position to call variants in.",
+                   default=100)
     p.add_argument("--prefix",
                    help="Prefix for output files",
                    required=True)
@@ -49,4 +55,4 @@ if __name__ == "__main__":
     chr_colname = "hm_chr"
     pos_colname = "hm_pos"
 
-    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix)
+    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix, args.flank)
