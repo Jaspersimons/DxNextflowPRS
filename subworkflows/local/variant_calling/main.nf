@@ -26,7 +26,8 @@ workflow VARIANT_CALLING {
         ch_genome_index,
         ch_genome_dict,
         ch_dbsnp,
-        ch_dbsnp_index
+        ch_dbsnp_index,
+        ch_alleles
     )
 
     GATK4_GENOTYPEGVCFS(
@@ -37,7 +38,7 @@ workflow VARIANT_CALLING {
         ch_genome_dict,
         ch_dbsnp,
         ch_dbsnp_index,
-        ch_alleles
+        ch_snp_list
     )
     
     // GATK4_HAPLOTYPECALLER.out.vcf

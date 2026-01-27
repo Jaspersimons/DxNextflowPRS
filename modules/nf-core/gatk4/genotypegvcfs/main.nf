@@ -14,8 +14,7 @@ process GATK4_GENOTYPEGVCFS {
     tuple val(meta4), path(dict)
     tuple val(meta5), path(dbsnp)
     tuple val(meta6), path(dbsnp_tbi)
-    tuple val(meta7), path(alleles)
-    
+    tuple val(meta7), path(intervals)
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcf
@@ -30,8 +29,7 @@ process GATK4_GENOTYPEGVCFS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def input_command = input.name.endsWith(".vcf") || input.name.endsWith(".vcf.gz") ? "${input}" : "gendb://${input}"
     def dbsnp_command = dbsnp ? "--dbsnp ${dbsnp}" : ""
-    def alleles_command = alleles ? "--alleles ${alleles}" : ""
-
+    def intervals_command = intervals ? "-L ${intervals}" : ""
     def avail_mem = 3072
     if (!task.memory) {
         log.info('[GATK GenotypeGVCFs] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.')
@@ -45,8 +43,8 @@ process GATK4_GENOTYPEGVCFS {
         --variant ${input_command} \\
         --output ${prefix}.vcf.gz \\
         --reference ${fasta} \\
-        ${alleles_command} \\
         ${dbsnp_command} \\
+        ${intervals_command} \\
         --tmp-dir . \\
         ${args}
 
