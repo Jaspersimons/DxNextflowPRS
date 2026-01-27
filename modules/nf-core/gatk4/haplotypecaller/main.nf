@@ -14,7 +14,8 @@ process GATK4_HAPLOTYPECALLER {
 	tuple val(meta4), path(dict)
 	tuple val(meta5), path(dbsnp)
 	tuple val(meta6), path(dbsnp_tbi)
-    tuple val(meta7), path(alleles)
+    tuple val(meta7), path(alleles), path(alleles_tbi)
+    
 
 	output:
 	tuple val(meta), path("*.vcf.gz"), emit: vcf

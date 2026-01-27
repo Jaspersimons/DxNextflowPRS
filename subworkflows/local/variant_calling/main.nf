@@ -13,10 +13,12 @@ workflow VARIANT_CALLING {
     ch_dbsnp_index
     ch_snp_list
     ch_snp_vcf
+    
 
     main:
 
     ch_alleles = ch_snp_vcf.collect()
+    
 
     GATK4_HAPLOTYPECALLER(
         ch_samplesheet.combine(
@@ -38,7 +40,7 @@ workflow VARIANT_CALLING {
         ch_genome_dict,
         ch_dbsnp,
         ch_dbsnp_index,
-        ch_snp_list
+        ch_snp_vcf
     )
     
     // GATK4_HAPLOTYPECALLER.out.vcf
