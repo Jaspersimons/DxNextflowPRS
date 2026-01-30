@@ -18,11 +18,8 @@ nextflow_process {
             }
 
             then {
-                // def norm_csv = path(process.out.normalised_model[0][1]).csv(decompress: true)
-                // println norm_csv
                 assertAll(
                     {assert process.success},
-                    // {assert snapshot(norm_csv.text.md5sum()).match()}
                 )
             }
         }
