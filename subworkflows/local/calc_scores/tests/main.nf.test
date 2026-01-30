@@ -30,17 +30,16 @@ nextflow_workflow {
             }
         }
         then {
-            def csv = path(process.out.summary[0][1]).csv().table
-            def matched = csv.stringColumn("match_status").isEqualTo("matched")
-            
+            def csv = path(workflow.out.ch_score_summary[0][1]).csv().table
             def n_ambiguous_SNV = csv.where(
-                csv.booleanColumn("ambiguous").isTrue().and(matched)
+                csv.booleanColumn("ambiguous").isTrue()
+                    .and(csv.stringColumn("match_status").isEqualTo("matched"))
+            ).row(0).getInt("count")
+            def n_unambiguous_SNV = csv.where(
+                csv.booleanColumn("ambiguous").isFalse()
+                    .and(csv.stringColumn("match_status").isEqualTo("matched"))
             ).row(0).getInt("count")
 
-            def n_unambiguous_SNV = csv.where(
-                csv.booleanColumn("ambiguous").isFalse().and(matched)
-            ).row(0).getInt("count")
-            
             assertAll (
                 {assert workflow.success},
                 {assert snapshot(workflow.out.ch_score_norm[0]).match()},
