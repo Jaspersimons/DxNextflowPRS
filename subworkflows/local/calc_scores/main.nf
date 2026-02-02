@@ -1,0 +1,46 @@
+include { PGSCATALOG_MATCH } from "../../../modules/local/pgscatalog/match/main"
+include { PGS_NORM         } from "../../../modules/local/pgs_norm/main"
+include { PLINK2_SCORE     } from '../../../modules/nf-core/plink2/score/main'
+include { PLINK2_VCF       } from "../../../modules/nf-core/plink2/vcf/main"
+
+workflow CALC_SCORES {
+    take:
+    ch_vcf
+    ch_normalised_model
+
+    main:
+
+    PLINK2_VCF(
+        ch_vcf
+    )
+
+    PGSCATALOG_MATCH(
+        ch_normalised_model,
+        PLINK2_VCF.out.pvar_zst,
+    )
+
+    PLINK2_SCORE(
+        PLINK2_VCF.out.pgen.join(PLINK2_VCF.out.psam).join(PLINK2_VCF.out.pvar).join(PLINK2_VCF.out.afreq),
+        PGSCATALOG_MATCH.out.scorefile.map { _meta, path -> path },
+    )
+
+    PGS_NORM(
+        PLINK2_SCORE.out.score,
+        params.model_mu,
+        params.model_sd,
+    )
+
+
+    // Collate software versions
+    ch_versions = Channel.empty()
+    ch_versions = ch_versions.mix(PLINK2_VCF.out.versions)
+    ch_versions = ch_versions.mix(PGSCATALOG_MATCH.out.versions)
+    ch_versions = ch_versions.mix(PLINK2_SCORE.out.versions)
+
+    emit:
+    ch_versions       = ch_versions
+    ch_score_norm     = PGS_NORM.out.tsv
+    ch_score_variants = PGSCATALOG_MATCH.out.log
+    ch_score          = PGSCATALOG_MATCH.out.scorefile
+    ch_score_summary  = PGSCATALOG_MATCH.out.summary
+}
