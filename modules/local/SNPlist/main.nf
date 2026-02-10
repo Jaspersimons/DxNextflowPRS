@@ -11,11 +11,13 @@ process GET_SNPLIST {
 
     script:
     def prefix = task.ext.prefix ?: meta.id
+    def args = task.ext.args ?: ""
     """
     get_snp_list.py \\
         --scoring_file ${scoring_file} \\
-        --prefix ${prefix}
-
+        --prefix ${prefix} \\
+        ${args}
+    
     export prefix=${prefix}
     """
 

@@ -18,6 +18,8 @@ workflow VARIANT_CALLING {
     main:
 
     ch_alleles = ch_snp_vcf.collect()
+
+    
     
 
     GATK4_HAPLOTYPECALLER(
@@ -32,16 +34,18 @@ workflow VARIANT_CALLING {
         ch_alleles
     )
 
-    GATK4_GENOTYPEGVCFS(
-        GATK4_HAPLOTYPECALLER.out.vcf
-            .join(GATK4_HAPLOTYPECALLER.out.tbi),
-        ch_genome_fasta,
-        ch_genome_index,
-        ch_genome_dict,
-        ch_dbsnp,
-        ch_dbsnp_index,
-        ch_snp_vcf
-    )
+    // GATK4_GENOTYPEGVCFS(
+    //     GATK4_HAPLOTYPECALLER.out.vcf
+    //         .join(GATK4_HAPLOTYPECALLER.out.tbi),
+    //     ch_genome_fasta,
+    //     ch_genome_index,
+    //     ch_genome_dict,
+    //     ch_dbsnp,
+    //     ch_dbsnp_index,
+    //     ch_snp_list
+    // )
+
+    
     
     // GATK4_HAPLOTYPECALLER.out.vcf
     //     .map { _meta, vcf -> vcf }
@@ -70,7 +74,7 @@ workflow VARIANT_CALLING {
     // ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions)
 
     emit:
-    vcf         = GATK4_GENOTYPEGVCFS.out.vcf
-    tbi         = GATK4_GENOTYPEGVCFS.out.tbi
+    vcf         = GATK4_HAPLOTYPECALLER.out.vcf
+    tbi         = GATK4_HAPLOTYPECALLER.out.tbi
     ch_versions = ch_versions
 }
