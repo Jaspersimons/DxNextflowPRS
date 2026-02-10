@@ -18,28 +18,28 @@ nextflow_workflow {
         when {
             workflow {
             """
-                input[0] = [[id: "vcf"],
-                    file(
-                        "${projectDir}/assets/test-data/test.vcf",
-                        checkIfExists: true)]  //ch_vcf
-                input[1] = [[id: "model"],
-                    file(
-                        "${projectDir}/assets/test-data/norm_test_model_subworkflow.txt.gz",
-                        checkIfExists: true)]
+                input[0] = [
+                    [id: "vcf"],
+                    file("${projectDir}/assets/test-data/test.vcf", checkIfExists: true)
+                ]  
+                input[1] = [
+                    [id: "model"],
+                    file("${projectDir}/assets/test-data/norm_test_model_subworkflow.txt.gz", checkIfExists: true)
+                ]
             """
             }
         }
         then {
             def csv = path(workflow.out.ch_score_summary[0][1]).csv().table
-            def n_ambiguous_SNV = csv.where(csv.booleanColumn("ambiguous").isTrue()
-                                        .and(csv.stringColumn("match_status").isEqualTo("matched")))
-                .row(0)
-                .getInt("count")
-            def n_unambiguous_SNV = csv.where(csv.booleanColumn("ambiguous").isFalse()
-                                        .and(csv.stringColumn("match_status").isEqualTo("matched")))
-                .row(0)
-                .getInt("count")
-            
+            def n_ambiguous_SNV = csv.where(
+                csv.booleanColumn("ambiguous").isTrue()
+                    .and(csv.stringColumn("match_status").isEqualTo("matched"))
+            ).row(0).getInt("count")
+            def n_unambiguous_SNV = csv.where(
+                csv.booleanColumn("ambiguous").isFalse()
+                    .and(csv.stringColumn("match_status").isEqualTo("matched"))
+            ).row(0).getInt("count")
+
             assertAll (
                 {assert workflow.success},
                 {assert snapshot(workflow.out.ch_score_norm[0]).match()},
