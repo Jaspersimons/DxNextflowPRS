@@ -14,7 +14,7 @@
                     {
                         "id": "BCAC_313_PRS_GRCh38"
                     },
-                    "BCAC_313_PRS_GRCh38_snplist.list:md5,2195846b303abb5c61ec3832438529a9"
+                    "BCAC_313_PRS_GRCh38_snplist.list:md5,3e21c088d2044dcf23e4f300fa7e5e72"
                 ]
             ],
             [
@@ -30,6 +30,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.7"
         },
-        "timestamp": "2026-01-23T10:55:29.216207"
+        "timestamp": "2026-02-10T12:26:34.328561"
     }
 }
