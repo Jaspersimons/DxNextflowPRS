@@ -17,6 +17,8 @@ process PLINK2_VCF {
 	tuple val(meta), path("*.pvar.zst"), emit: pvar_zst
 	tuple val(meta), path("*.afreq"), emit: afreq
     tuple val(meta), path("*.afreq.gz"), emit: afreq_gz
+    tuple val(meta), path('*.vmiss'), emit: vmiss
+    tuple val(meta), path('*.vmiss.gz'), emit: vmiss_gz
 	path "versions.yml", emit: versions
 
 	when:
@@ -36,6 +38,7 @@ process PLINK2_VCF {
 
     plink2 --zst-decompress ${prefix}.pvar.zst > ${prefix}.pvar
     gzip --keep ${prefix}.afreq
+    gzip --keep ${prefix}.vmiss
 
     
 	cat <<-END_VERSIONS > versions.yml
@@ -52,6 +55,9 @@ process PLINK2_VCF {
     touch ${prefix}.pvar
     touch ${prefix}.pvar.zst
 	touch ${prefix}.afreq
+    touch ${prefix}.afreq.gz
+    touch ${prefix}.vmiss
+    touch ${prefix}.vmiss.gz
 
 
 	cat <<-END_VERSIONS > versions.yml

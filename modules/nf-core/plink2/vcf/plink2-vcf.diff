@@ -4,7 +4,7 @@ Changes in component 'nf-core/plink2/vcf'
 Changes in 'plink2/vcf/main.nf':
 --- modules/nf-core/plink2/vcf/main.nf
 +++ modules/nf-core/plink2/vcf/main.nf
-@@ -1,40 +1,62 @@
+@@ -1,40 +1,68 @@
  process PLINK2_VCF {
 -    tag "$meta.id"
 -    label 'process_low'
@@ -37,6 +37,8 @@ Changes in 'plink2/vcf/main.nf':
 +	tuple val(meta), path("*.pvar.zst"), emit: pvar_zst
 +	tuple val(meta), path("*.afreq"), emit: afreq
 +    tuple val(meta), path("*.afreq.gz"), emit: afreq_gz
++    tuple val(meta), path('*.vmiss'), emit: vmiss
++    tuple val(meta), path('*.vmiss.gz'), emit: vmiss_gz
 +	path "versions.yml", emit: versions
  
 -    when:
@@ -71,6 +73,7 @@ Changes in 'plink2/vcf/main.nf':
 -    END_VERSIONS
 +    plink2 --zst-decompress ${prefix}.pvar.zst > ${prefix}.pvar
 +    gzip --keep ${prefix}.afreq
++    gzip --keep ${prefix}.vmiss
 +
 +    
 +	cat <<-END_VERSIONS > versions.yml
@@ -87,6 +90,9 @@ Changes in 'plink2/vcf/main.nf':
 +    touch ${prefix}.pvar
 +    touch ${prefix}.pvar.zst
 +	touch ${prefix}.afreq
++    touch ${prefix}.afreq.gz
++    touch ${prefix}.vmiss
++    touch ${prefix}.vmiss.gz
 +
 +
 +	cat <<-END_VERSIONS > versions.yml
