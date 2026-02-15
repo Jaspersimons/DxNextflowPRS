@@ -8,12 +8,14 @@ nextflow_pipeline{
 
     test("Run stubbed pipeline") {
         options "-stub-run"
-
         when{
-
+            params {
+                outdir = "$outputDir"
+            }
         }
         then{
             assert workflow.success
+            assert snapshot(file("$outputDir/pipeline_info/prs_software_mqc_versions.yml")).match("versions")
         }
     }
 }
