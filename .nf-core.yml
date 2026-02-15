@@ -7,6 +7,7 @@ lint:
     - conf/igenomes_ignored.config
     - CODE_OF_CONDUCT.md
     - assets/nf-core-dxnextflowprs_logo_light.png
+    - assets/nf-core-DxNextflowPRS_logo_light.png 
     - docs/images/nf-core-dxnextflowprs_logo_light.png
     - docs/images/nf-core-dxnextflowprs_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
@@ -14,8 +15,17 @@ lint:
     - docs/images/nf-core-DxNextflowPRS_logo_light.png
     - docs/images/nf-core-DxNextflowPRS_logo_dark.png
     - docs/output.md
-    - docs/README.me
+    - docs/README.md
     - docs/usage.md
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/nf-test.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - assets/email_template.txt
+    - assets/sendmail_template.txt 
 
   files_unchanged:
     - .github/CONTRIBUTING.md
