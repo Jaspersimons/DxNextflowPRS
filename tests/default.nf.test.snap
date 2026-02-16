@@ -1,5 +1,5 @@
 {
-    "versions": {
+    "Run stubbed pipeline": {
         "content": [
             "prs_software_mqc_versions.yml:md5,7293bdc00c8afa9bba21a51a7b019c78"
         ],
@@ -7,6 +7,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.7"
         },
-        "timestamp": "2026-02-15T14:40:52.296627"
+        "timestamp": "2026-02-16T08:52:06.281405"
     }
 }

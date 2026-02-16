@@ -15,7 +15,7 @@ nextflow_pipeline{
         }
         then{
             assert workflow.success
-            assert snapshot(file("$outputDir/pipeline_info/prs_software_mqc_versions.yml")).match("versions")
+            assert snapshot(file("$outputDir/pipeline_info/prs_software_mqc_versions.yml")).match()
         }
     }
 }
