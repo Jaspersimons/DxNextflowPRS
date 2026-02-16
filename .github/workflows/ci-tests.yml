@@ -28,7 +28,7 @@ jobs:
       - name: Setup Nextflow 25.04
         uses: nf-core/setup-nextflow@v2
         with:
-          version: "25.04"
+          version: "25.04.7"
 
       - name: Setup nf-test 0.9.2
         uses: nf-core/setup-nf-test@v1
