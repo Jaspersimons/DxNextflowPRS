@@ -37,8 +37,8 @@ process PLINK2_VCF {
         --out ${prefix}
 
     plink2 --zst-decompress ${prefix}.pvar.zst > ${prefix}.pvar
-    gzip --keep ${prefix}.afreq
-    gzip --keep ${prefix}.vmiss
+    gzip -k ${prefix}.afreq
+    gzip -k ${prefix}.vmiss
 
     
 	cat <<-END_VERSIONS > versions.yml

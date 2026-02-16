@@ -8,6 +8,7 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prs_pipeline'
 
+include { ANCESTRY_CHECK         } from '../subworkflows/local/ancestry_check/main'
 include { CALC_SCORES            } from '../subworkflows/local/calc_scores/main'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling/main'
@@ -68,6 +69,16 @@ workflow PRS {
         PRS_INTERVALS.out.normalised_model
     )
 
+
+    if (params.run_ancestry) {
+        ANCESTRY_CHECK(
+            CALC_SCORES.out.ch_pgen,
+            CALC_SCORES.out.ch_psam,
+            CALC_SCORES.out.ch_pvar,
+            CALC_SCORES.out.ch_vmiss_gz,
+            CALC_SCORES.out.ch_afreq_gz
+        )
+    }
 
     //
     // Collate and save software versions
