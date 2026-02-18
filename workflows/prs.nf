@@ -72,11 +72,9 @@ workflow PRS {
 
     if (params.run_ancestry) {
         ANCESTRY_CHECK(
+            Channel.of([[id:'ancestry_db'], file(params.ancestry_db)]),
             CALC_SCORES.out.ch_pgen,
-            CALC_SCORES.out.ch_psam,
-            CALC_SCORES.out.ch_pvar,
-            CALC_SCORES.out.ch_vmiss_gz,
-            CALC_SCORES.out.ch_afreq_gz
+            ch_PRS_model
         )
     }
 
