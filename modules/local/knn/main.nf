@@ -1,6 +1,6 @@
 process ANCESTRY_KNN {
     tag "${meta.id}"
-    tag "process_medium"
+    label "process_medium"
 
     container "ghcr.io/astral-sh/uv:python3.13-bookworm"
 

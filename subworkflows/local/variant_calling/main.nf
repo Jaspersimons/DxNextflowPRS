@@ -1,4 +1,4 @@
-include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main' 
 
 workflow VARIANT_CALLING {
     take:
@@ -31,6 +31,7 @@ workflow VARIANT_CALLING {
     // Collate software versions
     ch_versions = Channel.empty()
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
+    // ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions)
 
     emit:
     vcf         = GATK4_HAPLOTYPECALLER.out.vcf

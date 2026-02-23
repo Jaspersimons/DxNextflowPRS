@@ -70,4 +70,7 @@ workflow ANCESTRY {
         PLINK2_PCA.out.evecfile,
         ch_ref_meta
     )
+
+    emit:
+    knn_tsv = ANCESTRY_KNN.out.knn_tsv
 }
