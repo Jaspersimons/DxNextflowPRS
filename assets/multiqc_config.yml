@@ -5,9 +5,11 @@ report_section_order:
   "nf-core-prs-methods-description":
     order: -1000
   software_versions:
-    order: -1001
-  "nf-core-prs-summary":
     order: -1002
+  "nf-core-prs-summary":
+    order: -1001
+  "UMCUGenetics-DxNextflowPRS-summary":
+    order: -1003
 
 export_plots: true
 

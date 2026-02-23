@@ -1,0 +1,14 @@
+{
+    "Run stubbed pipeline": {
+        "content": [
+            {
+                
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2026-02-16T10:28:57.934221"
+    }
+}
