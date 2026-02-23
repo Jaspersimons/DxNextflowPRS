@@ -41,7 +41,8 @@ def get_opts():
                    required=True)
     p.add_argument("--flank",
                    help="Flanking region for each position to call variants in.",
-                   default=100)
+                   default=100,
+                   type=int)
     p.add_argument("--prefix",
                    help="Prefix for output files",
                    required=True)
@@ -55,4 +56,4 @@ if __name__ == "__main__":
     chr_colname = "hm_chr"
     pos_colname = "hm_pos"
 
-    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix, int(args.flank))
+    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix, args.flank)
