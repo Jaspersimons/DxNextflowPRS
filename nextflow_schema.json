@@ -46,6 +46,24 @@
                     "format": "file-path",
                     "exists": true
                 }
+                ,
+                "genome_dict": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to the genome sequence dictionary file (e.g. .dict)",
+                    "exists": true
+                },
+                "dbsnp": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to dbSNP VCF file",
+                    "exists": true
+                },
+                "assembly_version": {
+                    "type": "string",
+                    "description": "Reference assembly version used by the pipeline",
+                    "default": "GRCh38"
+                }
             }
         },
         "institutional_config_options": {
@@ -118,6 +136,12 @@
                     "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
+                    "cluster_options": {
+                        "type": "string",
+                        "description": "Cluster-specific options passed to the job scheduler (e.g. SBATCH options)",
+                        "fa_icon": "fas fa-server",
+                        "hidden": true
+                    },
                 "email_on_fail": {
                     "type": "string",
                     "description": "Email address for completion summary, only when pipeline fails.",
@@ -171,12 +195,51 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "pipelines_testdata_base_path": {
+                "cache_dir": {
                     "type": "string",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "format": "directory-path",
+                    "description": "Directory used for Nextflow process cache",
+                    "fa_icon": "fas fa-hdd"
+                },
+                "help": {
+                    "type": "boolean",
+                    "description": "Show brief help and exit",
                     "hidden": true
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Show full help and exit",
+                    "hidden": true
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Show hidden parameters in help output",
+                    "hidden": true
+                }
+            }
+        }
+        ,
+        "scoring_options": {
+            "title": "Scoring options",
+            "type": "object",
+            "fa_icon": "fas fa-calculator",
+            "description": "Options used for polygenic risk score calculation",
+            "properties": {
+                "prs_model": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to the PRS model file",
+                    "exists": true
+                },
+                "model_mu": {
+                    "type": ["number", "string"],
+                    "description": "Mean value of the model (mu)",
+                    "default": -0.424
+                },
+                "model_sd": {
+                    "type": ["number", "string"],
+                    "description": "Standard deviation of the model (sd)",
+                    "default": 0.611
                 }
             }
         }
@@ -191,6 +254,10 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        }
+        ,
+        {
+            "$ref": "#/$defs/scoring_options"
         }
     ]
 }

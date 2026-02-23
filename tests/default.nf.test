@@ -1,0 +1,28 @@
+nextflow_pipeline{
+    name "Test DxNextflowPRS stubbed"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "local"
+    tag "pipeline/local"
+
+    test("Run stubbed pipeline") {
+        options "-stub-run"
+        when{
+            params {
+                outdir = "$outputDir"
+            }
+        }
+        then{
+
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_demo_software_mqc_versions.yml")
+                ).match()  }
+            )
+            
+
+        }
+    }
+}

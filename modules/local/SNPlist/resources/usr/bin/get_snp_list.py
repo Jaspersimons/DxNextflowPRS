@@ -41,7 +41,8 @@ def get_opts():
                    required=True)
     p.add_argument("--flank",
                    help="Flanking region for each position to call variants in.",
-                   default=100)
+                   default=100,
+                   type=int)
     p.add_argument("--prefix",
                    help="Prefix for output files",
                    required=True)
