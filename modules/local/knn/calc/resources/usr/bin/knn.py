@@ -2,6 +2,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
+#     "matplotlib",
 #     "numpy",
 #     "pandas",
 #     "typer",
@@ -14,9 +15,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated
 
+import matplotlib
 import numpy as np
 import pandas as pd
 import typer
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 app = typer.Typer(add_completion=False, help="KNN ancestry prediction from PCA coordinates.")
 
@@ -57,6 +62,15 @@ def get_pc_columns(df: pd.DataFrame) -> list[str]:
             "No PC columns found. Expected columns like PC1, PC2, ..."
         )
     return pc_cols
+
+
+def sort_pc_columns(pc_cols: list[str]) -> list[str]:
+    """Sort PC columns by their numeric suffix when present (PC1, PC2, PC10, ...)."""
+    def _pc_sort_key(column: str) -> tuple[int, str]:
+        suffix = column[2:]
+        return (int(suffix), column) if suffix.isdigit() else (10**9, column)
+
+    return sorted(pc_cols, key=_pc_sort_key)
 
 
 def split_train_predict(
@@ -134,6 +148,80 @@ def write_predictions(
     out_df.to_csv(output_path, sep="\t", index=False)
 
 
+def write_pca_plot(
+    train_df: pd.DataFrame,
+    predict_df: pd.DataFrame,
+    predicted_labels: np.ndarray,
+    pc_x: str,
+    pc_y: str,
+    label_col: str,
+    output_path: Path,
+) -> None:
+    """Generate a PCA scatter plot colored by cluster/group labels."""
+    plot_train = train_df[[pc_x, pc_y, label_col]].copy()
+    plot_train["cluster"] = plot_train[label_col].astype(str)
+    plot_train["source"] = "reference"
+
+    plot_predict = predict_df[[pc_x, pc_y]].copy()
+    plot_predict["cluster"] = predicted_labels
+    plot_predict["source"] = "predicted"
+
+    plot_df = pd.concat(
+        [
+            plot_train[[pc_x, pc_y, "cluster", "source"]],
+            plot_predict[[pc_x, pc_y, "cluster", "source"]],
+        ],
+        ignore_index=True,
+    )
+
+    clusters = sorted(plot_df["cluster"].unique())
+    cmap = plt.cm.get_cmap("tab20", max(len(clusters), 1))
+    color_map = {cluster: cmap(i) for i, cluster in enumerate(clusters)}
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    for cluster in clusters:
+        cluster_train = plot_df[(plot_df["cluster"] == cluster) & (plot_df["source"] == "reference")]
+        cluster_pred = plot_df[(plot_df["cluster"] == cluster) & (plot_df["source"] == "predicted")]
+        color = color_map[cluster]
+
+        if not cluster_train.empty:
+            ax.scatter(
+                cluster_train[pc_x],
+                cluster_train[pc_y],
+                s=28,
+                alpha=0.75,
+                color=color,
+                edgecolors="none",
+                label=str(cluster),
+            )
+
+        if not cluster_pred.empty:
+            ax.scatter(
+                cluster_pred[pc_x],
+                cluster_pred[pc_y],
+                s=80,
+                alpha=1.0,
+                marker="X",
+                color=color,
+                edgecolors="black",
+                linewidths=0.6,
+            )
+
+    ax.set_xlabel(pc_x)
+    ax.set_ylabel(pc_y)
+    ax.set_title("PCA Clusters with KNN Predictions")
+
+    handles, labels = ax.get_legend_handles_labels()
+    if handles:
+        by_label = dict(zip(labels, handles))
+        ax.legend(by_label.values(), by_label.keys(), title="Cluster", bbox_to_anchor=(1.02, 1), loc="upper left")
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=200)
+    plt.close(fig)
+
+
 @app.command()
 def main(
     eig: Annotated[
@@ -169,6 +257,12 @@ def main(
     normalize: Annotated[
         bool, typer.Option("--normalize/--no-normalize", help="Standardize PC columns.")
     ] = True,
+    plot: Annotated[
+        bool, typer.Option("--plot/--no-plot", help="Generate PCA scatter plot.")
+    ] = True,
+    plot_output: Annotated[
+        Path, typer.Option("--plot-output", help="Output PNG path for PCA scatter plot.")
+    ] = Path("knn_pca.png"),
 ) -> None:
     """Run the KNN workflow from CLI arguments and write prediction output."""
     merged_df = read_input_tables(
@@ -178,7 +272,11 @@ def main(
         id_col=id_col,
         label_col=label_col,
     )
-    pc_cols = get_pc_columns(merged_df)
+    pc_cols = sort_pc_columns(get_pc_columns(merged_df))
+    if plot and len(pc_cols) < 2:
+        raise typer.BadParameter(
+            "At least two PC columns are required to generate a PCA plot."
+        )
     train_df, predict_df = split_train_predict(merged_df, label_col=label_col)
 
     train_features = train_df[pc_cols].to_numpy(dtype=float)
@@ -204,6 +302,17 @@ def main(
         confidences=confidences,
         output_path=output,
     )
+    if plot:
+        write_pca_plot(
+            train_df=train_df,
+            predict_df=predict_df,
+            predicted_labels=predicted_labels,
+            pc_x=pc_cols[0],
+            pc_y=pc_cols[1],
+            label_col=label_col,
+            output_path=plot_output,
+        )
+        typer.echo(f"Wrote {plot_output}")
     typer.echo(f"Wrote {output}")
 
 

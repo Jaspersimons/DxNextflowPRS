@@ -9,7 +9,8 @@ process ANCESTRY_KNN {
     tuple val(meta2), path(ref_metadata)
 
     output:
-    tuple val(meta), path("*_knn.tsv"), emit: knn_tsv 
+    tuple val(meta), path("*_knn.tsv"), emit: knn_tsv
+    tuple val(meta), path("*_knn_pca.png"), emit: knn_pca_plot
 
     script:
     def prefix = task.ext.prefix ?: meta.id
@@ -19,6 +20,7 @@ process ANCESTRY_KNN {
         --eig ${eigenvec} \\
         --labels ${ref_metadata} \\
         ${args} \\
+        --plot-output ${prefix}_knn_pca.png \\
         --output ${prefix}_knn.tsv
     """
 
@@ -26,5 +28,6 @@ process ANCESTRY_KNN {
     def prefix = task.ext.prefix ?: meta.id
     """
     touch ${prefix}_knn.tsv
+    touch ${prefix}_knn_pca.png
     """
 }

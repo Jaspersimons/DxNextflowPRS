@@ -85,7 +85,8 @@ workflow ANCESTRY {
     ch_versions = ch_versions.mix(PLINK2_PCA.out.versions)
 
     emit:
-    knn_tsv     = ANCESTRY_KNN.out.knn_tsv
-    knn_mqc_tsv = ANCESTRY_KNN_MERGE.out.knn_mqc_tsv
+    knn_tsv        = ANCESTRY_KNN.out.knn_tsv
+    knn_pca_plot   = ANCESTRY_KNN.out.knn_pca_plot
+    knn_mqc_tsv    = ANCESTRY_KNN_MERGE.out.knn_mqc_tsv
     ch_versions    = ch_versions
 }
