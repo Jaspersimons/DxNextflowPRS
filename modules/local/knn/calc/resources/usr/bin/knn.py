@@ -257,9 +257,8 @@ def main(
     normalize: Annotated[
         bool, typer.Option("--normalize/--no-normalize", help="Standardize PC columns.")
     ] = True,
-    plot: Annotated[
-        bool, typer.Option("--plot/--no-plot", help="Generate PCA scatter plot.")
-    ] = True,
+    conf_threshold: Annotated[float, typer.Option('--conf_threshold', help="Confidence threshold for plot outputting")] = 0.6,
+    req_label: Annotated[str, typer.Option("--required_superpop", help="Expected super population for ancestry flagging")] = "EUR",
     plot_output: Annotated[
         Path, typer.Option("--plot-output", help="Output PNG path for PCA scatter plot.")
     ] = Path("knn_pca.png"),
@@ -273,9 +272,9 @@ def main(
         label_col=label_col,
     )
     pc_cols = sort_pc_columns(get_pc_columns(merged_df))
-    if plot and len(pc_cols) < 2:
+    if len(pc_cols) < 2:
         raise typer.BadParameter(
-            "At least two PC columns are required to generate a PCA plot."
+            "At least two PC columns are required."
         )
     train_df, predict_df = split_train_predict(merged_df, label_col=label_col)
 
@@ -302,7 +301,11 @@ def main(
         confidences=confidences,
         output_path=output,
     )
-    if plot:
+
+    first_confidence = confidences[0]
+    first_predicted_label = predicted_labels[0]
+
+    if first_confidence <= conf_threshold or first_predicted_label != req_label:
         write_pca_plot(
             train_df=train_df,
             predict_df=predict_df,

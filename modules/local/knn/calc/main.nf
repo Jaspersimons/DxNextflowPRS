@@ -10,7 +10,7 @@ process ANCESTRY_KNN {
 
     output:
     tuple val(meta), path("*_knn.tsv"), emit: knn_tsv
-    tuple val(meta), path("*_knn_pca.png"), emit: knn_pca_plot
+    tuple val(meta), path("*_knn_pca.png"), emit: knn_pca_plot, optional: true
 
     script:
     def prefix = task.ext.prefix ?: meta.id
