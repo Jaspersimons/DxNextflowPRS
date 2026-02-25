@@ -51,13 +51,6 @@
                         ],
                         "patch": "modules/nf-core/plink2/extract/plink2-extract.diff"
                     },
-                    "plink2/filter": {
-                        "branch": "master",
-                        "git_sha": "f84336b7fa91a65aa61d215b8c109fbb8e4b4ac6",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
                     "plink2/indeppairwise": {
                         "branch": "master",
                         "git_sha": "f84336b7fa91a65aa61d215b8c109fbb8e4b4ac6",
