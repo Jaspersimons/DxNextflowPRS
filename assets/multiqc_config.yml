@@ -11,7 +11,8 @@ report_section_order:
 custom_data:
   ancestry_knn:
     section_name: "Ancestry"
-    description: "Ancesry asignment is based on a PCA with 1000G project data, followed by k-nearest neighbour (kNN) clustering. Rule of thumb for confidence: >= 0.7 is accurate. < 0.7 indicates admixture / less confidence. For BCAC313 only EUR population should be considered."
+    description: "Ancesry asignment is based on a PCA with 1000G project data, followed by k-nearest neighbour (kNN) clustering. Rule of thumb for confidence: >= 0.7 is accurate. < 0.7 indicates admixture / less confidence.
+    For breast cancer (BCAC-313), variants were selected based on case–control studies conducted predominantly in individuals of West European ancestry. As a result, the risk score may be less accurate when applied to individuals from other ancestral backgrounds, with particularly reduced performance reported in people of African ancestry."
     file_format: "tsv"
     plot_type: "table"
     pconfig:
