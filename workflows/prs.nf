@@ -90,6 +90,7 @@ workflow PRS {
             ch_genome_fasta,
             ch_genome_index
         )
+        
     }
     
     //
@@ -101,6 +102,8 @@ workflow PRS {
     ch_versions = ch_versions.mix(PRS_INTERVALS.out.ch_versions)
     ch_versions = ch_versions.mix(VARIANT_CALLING.out.ch_versions)
     ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)
+
+    ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_mqc_tsv)
 
     softwareVersionsToYAML(ch_versions)
         .collectFile(

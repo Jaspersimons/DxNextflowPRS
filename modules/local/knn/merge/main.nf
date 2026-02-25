@@ -10,14 +10,11 @@ process ANCESTRY_KNN_MERGE {
 
     script:
     """
-    first=\$(ls -1 ${knn_tsvs} | head -n 1)
-    head -n 1 "\$first" | awk 'BEGIN{FS=OFS="\\t"} {print "sample", \$0}' > ancestry_knn_mqc.tsv
-
+    echo "Sample ID\tPrediction Group\tConfidence" > ancestry_knn_mqc.tsv
+    
   
     for f in ${knn_tsvs}; do
-        s=\$(basename "\$f")
-        s=\${s%.tsv}
-        tail -n +2 "\$f" | awk -v sample="\$s" 'BEGIN{FS=OFS="\\t"} {print sample, \$0}' >> ancestry_knn_mqc.tsv
+        tail -n 1 \$f >> ancestry_knn_mqc.tsv
     done
     """
 }
