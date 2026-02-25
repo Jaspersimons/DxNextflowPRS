@@ -104,7 +104,7 @@ workflow PRS {
     ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)
 
     if (params.run_ancestry) {
-        ch_versions = ch_versions.mix(ANCESTRY.out.versions)
+        ch_versions = ch_versions.mix(ANCESTRY.out.ch_versions)
         ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_mqc_tsv)
     }
 

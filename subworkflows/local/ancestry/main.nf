@@ -79,8 +79,6 @@ workflow ANCESTRY {
 
     // Collate software versions
     ch_versions = Channel.empty()
-    ch_versions = ch_versions.mix(BCFTOOLS_VIEW.out.versions)
-    ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions)
     ch_versions = ch_versions.mix(PLINK2_VCF.out.versions)
     ch_versions = ch_versions.mix(PLINK2_INDEPPAIRWISE.out.versions)
     ch_versions = ch_versions.mix(PLINK2_EXTRACT.out.versions)
@@ -89,5 +87,5 @@ workflow ANCESTRY {
     emit:
     knn_tsv     = ANCESTRY_KNN.out.knn_tsv
     knn_mqc_tsv = ANCESTRY_KNN_MERGE.out.knn_mqc_tsv
-    versions    = ch_versions
+    ch_versions    = ch_versions
 }
