@@ -1,11 +1,11 @@
-include { ANCESTRY_KNN } from '../../../modules/local/knn/calc/main'
-include { ANCESTRY_KNN_MERGE } from '../../../modules/local/knn/merge/main'
-include { BCFTOOLS_MERGE } from '../../../modules/nf-core/bcftools/merge/main'
-include { BCFTOOLS_VIEW } from '../../../modules/nf-core/bcftools/view/main'
-include { PLINK2_VCF } from '../../../modules/nf-core/plink2/vcf/main'
-include { PLINK2_PCA } from '../../../modules/nf-core/plink2/pca/main'
-include { PLINK2_EXTRACT } from '../../../modules/nf-core/plink2/extract/main'
+include { ANCESTRY_KNN         } from '../../../modules/local/knn/calc/main'
+include { ANCESTRY_KNN_MERGE   } from '../../../modules/local/knn/merge/main'
+include { BCFTOOLS_MERGE       } from '../../../modules/nf-core/bcftools/merge/main'
+include { BCFTOOLS_VIEW        } from '../../../modules/nf-core/bcftools/view/main'
+include { PLINK2_EXTRACT       } from '../../../modules/nf-core/plink2/extract/main'
 include { PLINK2_INDEPPAIRWISE } from '../../../modules/nf-core/plink2/indeppairwise/main'
+include { PLINK2_PCA           } from '../../../modules/nf-core/plink2/pca/main'
+include { PLINK2_VCF           } from '../../../modules/nf-core/plink2/vcf/main'
 
 workflow ANCESTRY {
     take:
@@ -46,9 +46,9 @@ workflow ANCESTRY {
         PLINK2_VCF.out.pgen
             .join(PLINK2_VCF.out.pvar)
             .join(PLINK2_VCF.out.psam),
-        200,
-        50,
-        0.2
+        params.indeppairwise_win,
+        params.indeppairwise_step,
+        params.indeppairwise_r2
     )
 
     PLINK2_EXTRACT(
@@ -62,7 +62,7 @@ workflow ANCESTRY {
         PLINK2_EXTRACT.out.extract_pgen
             .join(PLINK2_EXTRACT.out.extract_psam)
             .join(PLINK2_EXTRACT.out.extract_pvar),
-        5,
+        params.pca_npcs,
         false
     )
 

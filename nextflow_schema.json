@@ -266,6 +266,26 @@
                     "format": "file-path",
                     "description": "Path to ancestry database metadata file",
                     "fa_icon": "fas fa-file"
+                },
+                "indeppairwise_win": {
+                    "type": "integer",
+                    "description": "Window size (variant count) for PLINK2 --indep-pairwise",
+                    "default": 200
+                },
+                "indeppairwise_step": {
+                    "type": "integer",
+                    "description": "Step size (variant count shift) for PLINK2 --indep-pairwise",
+                    "default": 50
+                },
+                "indeppairwise_r2": {
+                    "type": "number",
+                    "description": "r^2 threshold for PLINK2 --indep-pairwise",
+                    "default": 0.2
+                },
+                "pca_npcs": {
+                    "type": "integer",
+                    "description": "Number of principal components for PLINK2 PCA",
+                    "default": 5
                 }
             }
         }
