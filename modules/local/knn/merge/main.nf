@@ -12,7 +12,6 @@ process ANCESTRY_KNN_MERGE {
     """
     echo "Sample ID\tPrediction Group\tConfidence" > ancestry_knn_mqc.tsv
     
-  
     for f in ${knn_tsvs}; do
         tail -n 1 \$f >> ancestry_knn_mqc.tsv
     done
