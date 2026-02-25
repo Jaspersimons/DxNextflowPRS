@@ -25,10 +25,12 @@ workflow ANCESTRY {
         []
     )
 
-    ch_merge_input = ch_vcf.combine(BCFTOOLS_VIEW.out.vcf
+    
+
+    ch_merge_input = ch_vcf.join(BCFTOOLS_VIEW.out.vcf
                                     .join(BCFTOOLS_VIEW.out.tbi))
-        .map{ meta_sample, vcf_sample, tbi_sample, _meta_ref, vcf_ref, tbi_ref ->
-            tuple(meta_sample, [vcf_sample, vcf_ref], [tbi_sample, tbi_ref])
+        .map{meta, sam_vcf, sam_tbi, ref_vcf, ref_tbi ->
+            [meta, [sam_vcf, ref_vcf], [sam_tbi, ref_tbi]]
         }
     
     BCFTOOLS_MERGE(

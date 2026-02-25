@@ -80,6 +80,7 @@ workflow PRS {
             .first()
         ch_ref_meta = Channel.fromPath("${params.ancestry_db_meta}")
             .map {meta -> [[id: meta.getSimpleName()], meta]}
+            .first()
         
         ANCESTRY(
             VARIANT_CALLING.out.vcf
