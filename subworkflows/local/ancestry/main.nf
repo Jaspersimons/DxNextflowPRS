@@ -1,4 +1,5 @@
-include { ANCESTRY_KNN } from '../../../modules/local/knn/main'
+include { ANCESTRY_KNN } from '../../../modules/local/knn/calc/main'
+include { ANCESTRY_KNN_MERGE } from '../../../modules/local/knn/merge/main'
 include { BCFTOOLS_MERGE } from '../../../modules/nf-core/bcftools/merge/main'
 include { BCFTOOLS_VIEW } from '../../../modules/nf-core/bcftools/view/main'
 include { PLINK2_VCF } from '../../../modules/nf-core/plink2/vcf/main'
@@ -16,8 +17,6 @@ workflow ANCESTRY {
 
     main:
 
-    
-
     BCFTOOLS_VIEW(
         ch_ref_vcf,
         ch_vcf,
@@ -25,10 +24,9 @@ workflow ANCESTRY {
         []
     )
 
-    
-
-    ch_merge_input = ch_vcf.join(BCFTOOLS_VIEW.out.vcf
-                                    .join(BCFTOOLS_VIEW.out.tbi))
+    ch_merge_input = ch_vcf
+        .join(BCFTOOLS_VIEW.out.vcf
+              .join(BCFTOOLS_VIEW.out.tbi))
         .map{meta, sam_vcf, sam_tbi, ref_vcf, ref_tbi ->
             [meta, [sam_vcf, ref_vcf], [sam_tbi, ref_tbi]]
         }
@@ -73,6 +71,13 @@ workflow ANCESTRY {
         ch_ref_meta
     )
 
+    ANCESTRY_KNN_MERGE(
+        ANCESTRY_KNN.out.knn_tsv
+            .map { _meta, tsv -> tsv }
+            .collect()
+    )
+
     emit:
-    knn_tsv = ANCESTRY_KNN.out.knn_tsv
+    knn_tsv     = ANCESTRY_KNN.out.knn_tsv
+    knn_mqc_tsv = ANCESTRY_KNN_MERGE.out.knn_mqc_tsv
 }
