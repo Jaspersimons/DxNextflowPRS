@@ -4,6 +4,8 @@ report_comment: >
 report_section_order:
   software_versions:
     order: -1002
+  "UMCUGenetics-DxNextflowPRS-summary":
+    order: -1003
 
 
 custom_data:
