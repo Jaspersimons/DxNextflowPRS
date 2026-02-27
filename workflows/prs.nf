@@ -42,7 +42,7 @@ workflow PRS {
     ch_dbsnp = Channel.fromPath("${params.dbsnp}")
 		.map { file -> [['id': file.getSimpleName()], file] }
 		.collect()
-    
+
     ch_dbsnp_index = Channel.fromPath("${params.dbsnp}.tbi")
 		.map { file -> [['id': file.getSimpleName()], file] }
 		.collect()
@@ -50,8 +50,8 @@ workflow PRS {
     ch_PRS_model = Channel.fromPath(params.prs_model)
 		.map { path -> [['id': path.getSimpleName()], path] }
 		.collect()
-    
-    
+
+
     PRS_INTERVALS(ch_PRS_model)
 
     VARIANT_CALLING(
@@ -70,7 +70,7 @@ workflow PRS {
         PRS_INTERVALS.out.normalised_model
     )
 
-    
+
     if (params.run_ancestry) {
         ch_ref_vcf = Channel.of([
             file("${params.ancestry_db}", checkIfExists: true),
@@ -81,7 +81,7 @@ workflow PRS {
         ch_ref_meta = Channel.fromPath("${params.ancestry_db_meta}")
             .map {meta -> [[id: meta.getSimpleName()], meta]}
             .first()
-        
+
         ANCESTRY(
             VARIANT_CALLING.out.vcf
                 .join(VARIANT_CALLING.out.tbi),
@@ -90,9 +90,9 @@ workflow PRS {
             ch_genome_fasta,
             ch_genome_index
         )
-        
+
     }
-    
+
     //
     // Collate and save software versions
     //
@@ -106,6 +106,7 @@ workflow PRS {
     if (params.run_ancestry) {
         ch_versions = ch_versions.mix(ANCESTRY.out.ch_versions)
         ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_mqc_tsv)
+        ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_pca_plot.map{_meta, plot -> plot})
     }
 
     softwareVersionsToYAML(ch_versions)
