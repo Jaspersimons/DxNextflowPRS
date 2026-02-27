@@ -106,7 +106,9 @@ workflow PRS {
     if (params.run_ancestry) {
         ch_versions = ch_versions.mix(ANCESTRY.out.ch_versions)
         ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_mqc_tsv)
-        ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_pca_plot.map{_meta, plot -> plot})
+        ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_pca_plot
+                                                .map{_meta, plot -> plot}
+                                                .collect())
     }
 
     softwareVersionsToYAML(ch_versions)

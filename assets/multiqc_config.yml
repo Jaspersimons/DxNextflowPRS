@@ -7,9 +7,9 @@ report_section_order:
   ancestry_flagged_pca:
     order: -1002
   "UMCUGenetics-DxNextflowPRS-summary":
-    order: -1003
-  software_versions:
     order: -1004
+  software_versions:
+    order: -1003
 
 
 
@@ -26,15 +26,18 @@ custom_data:
       namespace: "Ancestry"
       sort_rows: false
 
-sp:
-  ancestry_knn:
-    fn: "ancestry_knn_mqc.tsv"
-
-custom_sections:
   ancestry_flagged_pca:
     section_name: "Ancestry PCA (flagged samples)"
     description: "Per-sample PCA plot for samples that were flagged (e.g. confidence < threshold or non-EUR)."
-    file: "*knn_pca.png"
+
+
+sp:
+  ancestry_knn:
+    fn: "ancestry_knn_mqc.tsv"
+  ancestry_flagged_pca:
+    fn: "*knn_pca.png"
+
 
 export_plots: true
 disable_version_detection: true
+ignore_images: false
