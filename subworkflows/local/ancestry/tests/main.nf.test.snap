@@ -6,7 +6,7 @@
                     {
                         "id": "test_sample"
                     },
-                    "test_sample_knn_knn.tsv:md5,b09f40ffcad061623b6279ce4b2b7949"
+                    "test_sample_knn.tsv:md5,b09f40ffcad061623b6279ce4b2b7949"
                 ]
             ]
         ],
@@ -14,6 +14,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-02-23T15:16:13.178911"
+        "timestamp": "2026-03-09T13:18:57.69625"
     }
 }
