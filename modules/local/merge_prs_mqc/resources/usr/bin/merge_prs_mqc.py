@@ -17,8 +17,12 @@ for f in files:
     dfs.append(df)
 
 combined = pd.concat(dfs, ignore_index=True)
-combined = combined.drop(columns=['#FID'], errors='ignore')
-combined = combined.rename(columns={'IID': 'Sample'})
+combined = combined.drop(columns=['#FID', 'SCORE1_AVG', 'DENOM', 'NAMED_ALLELE_DOSAGE_SUM'], errors='ignore')
+combined = combined.rename(columns={
+    'IID': 'Sample',
+    'SCORE1_SUM': 'Raw_score',
+    'SUM_Z': 'Z-score',
+})
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
