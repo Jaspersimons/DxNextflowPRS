@@ -12,6 +12,7 @@ include { CALC_SCORES            } from '../subworkflows/local/calc_scores/main'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling/main'
 
+include { MERGE_PRS_MQC          } from '../modules/local/merge_prs_mqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +70,10 @@ workflow PRS {
     )
 
 
+    MERGE_PRS_MQC(
+        CALC_SCORES.out.ch_score_norm.collect()
+    )
+
     //
     // Collate and save software versions
     //
@@ -105,6 +110,7 @@ workflow PRS {
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(MERGE_PRS_MQC.out.mqc_tsv)
 
 
     MULTIQC (
