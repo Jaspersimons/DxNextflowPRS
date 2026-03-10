@@ -1,0 +1,45 @@
+Changes in component 'nf-core/bcftools/merge'
+'modules/nf-core/bcftools/merge/environment.yml' is unchanged
+'modules/nf-core/bcftools/merge/meta.yml' is unchanged
+Changes in 'bcftools/merge/main.nf':
+--- modules/nf-core/bcftools/merge/main.nf
++++ modules/nf-core/bcftools/merge/main.nf
+@@ -11,7 +11,6 @@
+     tuple val(meta), path(vcfs), path(tbis)
+     tuple val(meta2), path(fasta)
+     tuple val(meta3), path(fai)
+-    tuple val(meta4), path(bed)
+ 
+     output:
+     tuple val(meta), path("*.{bcf,vcf}{,.gz}"), emit: vcf
+@@ -24,9 +23,7 @@
+     script:
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-
+     def input = vcfs.collect().size() > 1 ? vcfs.sort { vcf -> vcf.name } : vcfs
+-    def regions = bed ? "--regions-file ${bed}" : ""
+     def extension = args.contains("--output-type b") || args.contains("-Ob")
+         ? "bcf.gz"
+         : args.contains("--output-type u") || args.contains("-Ou")
+@@ -40,7 +37,6 @@
+     """
+     bcftools merge \\
+         ${args} \\
+-        ${regions} \\
+         --threads ${task.cpus} \\
+         --output ${prefix}.${extension} \\
+         ${input}
+
+'modules/nf-core/bcftools/merge/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bcftools/merge/tests/nextflow.gvcf.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/bcf_gz.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/vcf_gz_index.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/vcf_gz.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/vcf_gz_index_tbi.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/vcf.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/nextflow.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/main.nf.test' is unchanged
+'modules/nf-core/bcftools/merge/tests/bcf.config' is unchanged
+'modules/nf-core/bcftools/merge/tests/vcf_gz_index_csi.config' is unchanged
+************************************************************

@@ -1,0 +1,32 @@
+Changes in component 'nf-core/plink2/pca'
+'modules/nf-core/plink2/pca/environment.yml' is unchanged
+'modules/nf-core/plink2/pca/meta.yml' is unchanged
+Changes in 'plink2/pca/main.nf':
+--- modules/nf-core/plink2/pca/main.nf
++++ modules/nf-core/plink2/pca/main.nf
+@@ -7,7 +7,9 @@
+         : 'biocontainers/plink2:2.00a5.10--h4ac6f70_0'}"
+ 
+     input:
+-    tuple val(meta), val(npcs), val(use_approx), path(pgen), path(psam), path(pvar)
++    tuple val(meta), path(pgen), path(psam), path(pvar)
++    val(npcs)
++    val(use_approx)
+ 
+     output:
+     tuple val(meta), path("*.eigenvec"), emit: evecfile
+@@ -41,7 +43,7 @@
+     stub:
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     """
+-    touch ${prefix}.eigenvec ${prefix}.eigenval
++    touch ${prefix}.eigenvec ${prefix}.eigenval ${prefix}.log
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+'modules/nf-core/plink2/pca/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/plink2/pca/tests/tags.yml' is unchanged
+'modules/nf-core/plink2/pca/tests/nextflow.config' is unchanged
+'modules/nf-core/plink2/pca/tests/main.nf.test' is unchanged
+************************************************************

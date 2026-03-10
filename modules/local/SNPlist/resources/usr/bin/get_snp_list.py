@@ -56,4 +56,4 @@ if __name__ == "__main__":
     chr_colname = "hm_chr"
     pos_colname = "hm_pos"
 
-    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix, args.flank)
+    positions_to_tsv(args.scoring_file, chr_colname, pos_colname, args.prefix, int(args.flank))
