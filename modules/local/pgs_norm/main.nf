@@ -10,7 +10,7 @@ process PGS_NORM {
     val sd
 
     output:
-    path ("*_normalised_counts.tsv"), emit: tsv
+    tuple val(meta), path ("*_normalised_counts.tsv"), emit: tsv
 
     script:
     def prefix = task.ext.prefix ?: meta.id

@@ -10,9 +10,9 @@ process PGSCATALOG_MATCH {
     tuple val(meta2), path(pvar)
 
     output:
-    tuple val(meta), path("*_summary.csv"), emit: summary
-    tuple val(meta), path("*.scorefile.gz"), emit: scorefile
-    tuple val(meta), path("*_log.csv.gz"), emit: log
+    tuple val(meta2), path("*_summary.csv"), emit: summary
+    tuple val(meta2), path("*.scorefile.gz"), emit: scorefile
+    tuple val(meta2), path("*_log.csv.gz"), emit: log
     path "versions.yml", emit: versions
 
     script:
@@ -24,7 +24,7 @@ process PGSCATALOG_MATCH {
         --dataset ${prefix} \\
         --scorefiles ${scoring_file} \\
         --target ${pvar} \\
-        --outdir ./ 
+        --outdir ./
 
     echo "pgscatalog-match: 1.4.4" > versions.yml
     """
@@ -35,7 +35,7 @@ process PGSCATALOG_MATCH {
 	touch ${prefix}_summary.csv
 	touch ${prefix}.scorefile.gz
     touch ${prefix}_log.csv.gz
-    
+
 	echo "pgscatalog-match: 1.4.4" > versions.yml
 	"""
 }

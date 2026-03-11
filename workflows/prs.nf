@@ -13,6 +13,7 @@ include { CALC_SCORES            } from '../subworkflows/local/calc_scores/main'
 include { PRS_INTERVALS          } from '../subworkflows/local/prs_intervals/main'
 include { VARIANT_CALLING        } from '../subworkflows/local/variant_calling/main'
 
+include { SAMPLE_QC              } from '../modules/local/sample_qc/main'
 include { MERGE_PRS_MQC          } from '../modules/local/merge_prs_mqc/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
@@ -71,9 +72,7 @@ workflow PRS {
         PRS_INTERVALS.out.normalised_model
     )
 
-    MERGE_PRS_MQC(
-        CALC_SCORES.out.ch_score_norm.collect()
-    )
+
 
     if (params.run_ancestry) {
         ch_ref_vcf = Channel.of([
@@ -94,8 +93,19 @@ workflow PRS {
             ch_genome_fasta,
             ch_genome_index
         )
-
     }
+
+    // QC step
+    // ch_score_summary
+    SAMPLE_QC(
+        CALC_SCORES.out.ch_score_norm
+            .join(ANCESTRY.out.knn_tsv)
+            .join(CALC_SCORES.out.ch_score_summary)
+    )
+
+    MERGE_PRS_MQC(
+        SAMPLE_QC.out.score_qc.map{ _meta, tsv -> tsv }.collect()
+    )
 
 
     //
@@ -108,13 +118,6 @@ workflow PRS {
     ch_versions = ch_versions.mix(VARIANT_CALLING.out.ch_versions)
     ch_versions = ch_versions.mix(CALC_SCORES.out.ch_versions)
 
-    if (params.run_ancestry) {
-        ch_versions = ch_versions.mix(ANCESTRY.out.ch_versions)
-        ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_mqc_tsv)
-        ch_multiqc_files = ch_multiqc_files.mix(ANCESTRY.out.knn_pca_plot
-                                                .map{_meta, plot -> plot}
-                                                .collect())
-    }
 
     softwareVersionsToYAML(ch_versions)
         .collectFile(
