@@ -7,9 +7,11 @@
 */
 
 include { PRS } from './workflows/prs'
+
+include { CALC_SCORES             } from './subworkflows/local/calc_scores/main'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_prs_pipeline'
-include { PIPELINE_COMPLETION } from './subworkflows/local/utils_nfcore_prs_pipeline'
-include { CALC_SCORES } from './subworkflows/local/calc_scores/main'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_pipeline'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
