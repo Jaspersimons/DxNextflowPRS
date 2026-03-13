@@ -10,6 +10,8 @@ report_section_order:
     order: -1004
   software_versions:
     order: -1003
+  "prs-scores":
+    order: -999
 
 
 
