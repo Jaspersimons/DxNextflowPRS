@@ -9,12 +9,25 @@
 include { PRS } from './workflows/prs'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_prs_pipeline'
 include { PIPELINE_COMPLETION } from './subworkflows/local/utils_nfcore_prs_pipeline'
+include { CALC_SCORES } from './subworkflows/local/calc_scores/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+workflow CALC_SCORES_ONLY {
+    // Samplesheet format: sample,vcf
+    ch_vcf = channel.fromPath("${params.input}/*.vcf.gz")
+        .map { vcf -> [ [id: vcf.getSimpleName()], vcf ] }
+
+    ch_normalised_model = channel.fromPath("${params.normalised_model}")
+        .map { path -> [ [id: path.getSimpleName()], path ] }
+		.first()
+
+    CALC_SCORES(ch_vcf, ch_normalised_model)
+}
 
 workflow {
 	//
