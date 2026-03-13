@@ -12,7 +12,6 @@ include { CALC_SCORES             } from './subworkflows/local/calc_scores/main'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_prs_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_pipeline'
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -20,7 +19,9 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_prs_
 */
 
 workflow CALC_SCORES_ONLY {
-    // Samplesheet format: sample,vcf
+    //
+    // Entry Point: calculate only PRS scores for the given vcf files and model
+    //
     ch_vcf = channel.fromPath("${params.input}/*.vcf.gz")
         .map { vcf -> [ [id: vcf.getSimpleName()], vcf ] }
 
