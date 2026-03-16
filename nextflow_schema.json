@@ -215,6 +215,12 @@
                     "type": "boolean",
                     "description": "Show hidden parameters in help output",
                     "hidden": true
+                },
+                "PIPELINE_VERSION": {
+                    "type": "string",
+                    "description": "Pipeline version",
+                    "default": "1.0.0",
+                    "hidden": true
                 }
             }
         }
