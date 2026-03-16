@@ -33,7 +33,21 @@ def read_input_tables(
     id_col: str,
     label_col: str,
 ) -> pd.DataFrame:
-    """Read PCA and label tables, validate required columns, and merge by ID."""
+    """Read PCA and label tables, validate required columns, and merge by ID.
+
+    Args:
+        eig_path: Path to the PCA eigenvector file.
+        labels_path: Path to the sample label file.
+        sep: Delimiter used in both input files.
+        id_col: Column name for sample identifiers.
+        label_col: Column name for group labels.
+
+    Returns:
+        Merged DataFrame with PCA features and labels joined on ``id_col``.
+
+    Raises:
+        typer.BadParameter: If required columns are missing from either file.
+    """
     eig = pd.read_csv(eig_path, sep=sep)
     labels = pd.read_csv(labels_path, sep=sep)
 
@@ -55,7 +69,17 @@ def read_input_tables(
 
 
 def get_pc_columns(df: pd.DataFrame) -> list[str]:
-    """Return PCA feature columns named like PC1, PC2, etc."""
+    """Return PCA feature columns named like PC1, PC2, etc.
+
+    Args:
+        df: DataFrame expected to contain one or more PC columns.
+
+    Returns:
+        List of column names whose names start with ``PC`` (case-insensitive).
+
+    Raises:
+        typer.BadParameter: If no PC columns are found in ``df``.
+    """
     pc_cols = [column for column in df.columns if column.upper().startswith("PC")]
     if not pc_cols:
         raise typer.BadParameter(
@@ -65,7 +89,16 @@ def get_pc_columns(df: pd.DataFrame) -> list[str]:
 
 
 def sort_pc_columns(pc_cols: list[str]) -> list[str]:
-    """Sort PC columns by their numeric suffix when present (PC1, PC2, PC10, ...)."""
+    """Sort PC columns by their numeric suffix when present (PC1, PC2, PC10, ...).
+
+    Columns with a non-numeric suffix are sorted after numeric ones.
+
+    Args:
+        pc_cols: List of PC column names to sort.
+
+    Returns:
+        Sorted list of PC column names.
+    """
     def _pc_sort_key(column: str) -> tuple[int, str]:
         suffix = column[2:]
         return (int(suffix), column) if suffix.isdigit() else (10**9, column)
@@ -77,7 +110,19 @@ def split_train_predict(
     merged_df: pd.DataFrame,
     label_col: str,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split merged data into labeled training rows and unlabeled prediction rows."""
+    """Split merged data into labeled training rows and unlabeled prediction rows.
+
+    Args:
+        merged_df: DataFrame containing both labeled reference and unlabeled samples.
+        label_col: Column name that distinguishes labeled (non-NaN) from unlabeled rows.
+
+    Returns:
+        A ``(train, predict)`` tuple where ``train`` contains rows with a known label
+        and ``predict`` contains rows whose label is NaN.
+
+    Raises:
+        typer.BadParameter: If there are no labeled or no unlabeled samples after splitting.
+    """
     train = merged_df[merged_df[label_col].notna()].copy()
     predict = merged_df[merged_df[label_col].isna()].copy()
 
@@ -97,7 +142,17 @@ def standardize_train_query(
     train_features: np.ndarray,
     query_features: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Standardize features using training-set mean and standard deviation."""
+    """Standardize features using training-set mean and standard deviation.
+
+    Columns with zero variance in the training set are left unchanged (std set to 1).
+
+    Args:
+        train_features: Feature matrix for labeled training samples ``(n_train, n_pcs)``.
+        query_features: Feature matrix for samples to predict ``(n_query, n_pcs)``.
+
+    Returns:
+        A ``(train_std, query_std)`` tuple of standardized feature matrices.
+    """
     mean = train_features.mean(axis=0)
     std = train_features.std(axis=0)
     std[std == 0] = 1.0
@@ -110,7 +165,24 @@ def predict_knn(
     query_features: np.ndarray,
     k: int,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Predict class labels and confidence scores using a simple KNN vote."""
+    """Predict class labels and confidence scores using a simple KNN vote.
+
+    Confidence is the fraction of the *k* nearest neighbors that agree on the
+    winning label.  When ``k`` exceeds the number of training samples, the
+    effective neighbourhood is capped at ``len(train_labels)``.
+
+    Args:
+        train_features: Feature matrix for labeled training samples ``(n_train, n_pcs)``.
+        train_labels: Label array aligned with ``train_features`` ``(n_train,)``.
+        query_features: Feature matrix for samples to predict ``(n_query, n_pcs)``.
+        k: Number of nearest neighbors to consider.
+
+    Returns:
+        A ``(predicted_labels, confidences)`` tuple, both of shape ``(n_query,)``.
+
+    Raises:
+        typer.BadParameter: If ``k`` is less than 1.
+    """
     if k < 1:
         raise typer.BadParameter("k must be >= 1.")
 
@@ -137,7 +209,14 @@ def write_predictions(
     confidences: np.ndarray,
     output_path: Path,
 ) -> None:
-    """Write KNN predictions to a tab-separated output file."""
+    """Write KNN predictions to a tab-separated output file.
+
+    Args:
+        sample_ids: Array of sample identifiers ``(n_query,)``.
+        predicted_labels: Predicted group label for each sample ``(n_query,)``.
+        confidences: KNN confidence score for each prediction ``(n_query,)``.
+        output_path: Destination path for the output TSV.
+    """
     out_df = pd.DataFrame(
         {
             "#IID": sample_ids,
@@ -157,7 +236,22 @@ def write_pca_plot(
     label_col: str,
     output_path: Path,
 ) -> None:
-    """Generate a PCA scatter plot colored by cluster/group labels."""
+    """Generate a PCA scatter plot colored by cluster/group labels.
+
+    Reference samples are drawn as small filled circles; predicted samples are
+    drawn as larger ``X`` markers with a black edge, using the same color as
+    their assigned cluster.
+
+    Args:
+        train_df: DataFrame of labeled reference samples including ``pc_x``, ``pc_y``,
+            and ``label_col`` columns.
+        predict_df: DataFrame of samples to predict including ``pc_x`` and ``pc_y`` columns.
+        predicted_labels: Predicted group label for each row in ``predict_df`` ``(n_query,)``.
+        pc_x: Column name to use as the x-axis.
+        pc_y: Column name to use as the y-axis.
+        label_col: Column name holding the reference group label in ``train_df``.
+        output_path: Destination path for the output PNG.
+    """
     plot_train = train_df[[pc_x, pc_y, label_col]].copy()
     plot_train["cluster"] = plot_train[label_col].astype(str)
     plot_train["source"] = "reference"
@@ -263,7 +357,14 @@ def main(
         Path, typer.Option("--plot-output", help="Output PNG path for PCA scatter plot.")
     ] = Path("knn_pca.png"),
 ) -> None:
-    """Run the KNN workflow from CLI arguments and write prediction output."""
+    """Run the KNN workflow and write prediction output.
+
+    Reads PCA and label files, trains a KNN classifier on labeled reference
+    samples, predicts ancestry for unlabeled samples, and writes a TSV of
+    predictions.  A PCA scatter plot is written when the first sample's
+    confidence falls at or below ``conf_threshold`` or its predicted label
+    differs from ``req_label``.
+    """
     merged_df = read_input_tables(
         eig_path=eig,
         labels_path=labels,
