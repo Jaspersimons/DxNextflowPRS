@@ -1,4 +1,4 @@
-include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main' 
 
 workflow VARIANT_CALLING {
     take:
