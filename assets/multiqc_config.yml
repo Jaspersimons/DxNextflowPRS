@@ -38,6 +38,8 @@ sp:
     fn: "ancestry_knn_mqc.tsv"
   ancestry_flagged_pca:
     fn: "*knn_pca.png"
+  prs-scores:
+    fn: "prs_scores_mqc.tsv"
 
 
 export_plots: true
