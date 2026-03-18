@@ -44,6 +44,7 @@ def QC_check(row: pd.Series, expected_ancestry: list[str], conf_threshold: float
     if not matchrate_pass:
         qc_comment.append("INSUFFICIENT_VARIANT_COVERAGE")
 
+    row["Model matchrate"] = model_matchrate
     row["QC status"] = "PASS" if ancestry_group_pass and ancestry_conf_pass and matchrate_pass else "FAIL"
     row["QC Comment"] = ";".join(qc_comment)
     return row
@@ -126,7 +127,7 @@ def main(
     typer.echo(f"Model matchrate:{model_matchrate}")
     qc_df = combined_df.apply(QC_check, args=(expected_ancestry, conf_threshold, model_matchrate, matchrate_threshold), axis=1)
 
-    qc_df = qc_df.filter(items=["IID", "SCORE1_SUM", "SUM_Z", "QC status", "QC Comment"])
+    qc_df = qc_df.filter(items=["IID", "SCORE1_SUM", "SUM_Z", "Model Matchrate", "QC status", "QC Comment"])
 
     qc_df.to_csv(output, sep='\t', index=False)
 

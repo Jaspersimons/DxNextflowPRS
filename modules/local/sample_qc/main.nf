@@ -24,7 +24,6 @@ process SAMPLE_QC {
 
     stub:
     def prefix = task.ext.prefix ?: meta.id
-    def args = task.ext.args ?: ""
     """
     touch ${prefix}_qc.tsv
     """
