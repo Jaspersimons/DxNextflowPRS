@@ -20,8 +20,16 @@ workflow CALC_SCORES {
     )
 
     PLINK2_SCORE(
+<<<<<<< Updated upstream
         PLINK2_VCF.out.pgen.join(PLINK2_VCF.out.psam).join(PLINK2_VCF.out.pvar).join(PLINK2_VCF.out.afreq),
         PGSCATALOG_MATCH.out.scorefile.map { _meta, path -> path },
+=======
+        PLINK2_VCF.out.pgen
+            .join(PLINK2_VCF.out.psam)
+            .join(PLINK2_VCF.out.pvar)
+            .join(PLINK2_VCF.out.afreq)
+            .join(PGSCATALOG_MATCH.out.scorefile)
+>>>>>>> Stashed changes
     )
 
     PGS_NORM(
