@@ -15,9 +15,10 @@ workflow CALC_SCORES {
     )
 
     PGSCATALOG_MATCH(
-        ch_normalised_model,
         PLINK2_VCF.out.pvar_zst,
+        ch_normalised_model
     )
+
 
     PLINK2_SCORE(
         PLINK2_VCF.out.pgen

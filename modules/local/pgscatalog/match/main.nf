@@ -6,8 +6,9 @@ process PGSCATALOG_MATCH {
         : 'biocontainers/pgscatalog-utils:1.4.4--pyhdfd78af_0'}"
 
     input:
-    tuple val(meta), path(scoring_file)
-    tuple val(meta2), path(pvar)
+    tuple val(meta), path(pvar)
+    tuple val(meta2), path(scoring_file)
+
 
     output:
     tuple val(meta), path("*_summary.csv"), emit: summary
@@ -24,7 +25,7 @@ process PGSCATALOG_MATCH {
         --dataset ${prefix} \\
         --scorefiles ${scoring_file} \\
         --target ${pvar} \\
-        --outdir ./ 
+        --outdir ./
 
     echo "pgscatalog-match: 1.4.4" > versions.yml
     """
@@ -35,7 +36,7 @@ process PGSCATALOG_MATCH {
 	touch ${prefix}_summary.csv
 	touch ${prefix}.scorefile.gz
     touch ${prefix}_log.csv.gz
-    
+
 	echo "pgscatalog-match: 1.4.4" > versions.yml
 	"""
 }
