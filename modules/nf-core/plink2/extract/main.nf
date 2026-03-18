@@ -14,7 +14,7 @@ process PLINK2_EXTRACT {
     tuple val(meta), path("*.pgen")    , emit: extract_pgen
     tuple val(meta), path("*.psam")    , emit: extract_psam
     tuple val(meta), path("*.pvar.zst"), emit: extract_pvar_zst
-    tuple val(meta), path("*.pvar"), emit: extract_pvar
+    tuple val(meta), path("*.pvar")    , emit: extract_pvar
     path "versions.yml"                , emit: versions
 
     when:

@@ -46,10 +46,10 @@ workflow CALC_SCORES {
     ch_score_variants = PGSCATALOG_MATCH.out.log
     ch_score          = PGSCATALOG_MATCH.out.scorefile
     ch_score_summary  = PGSCATALOG_MATCH.out.summary
-    ch_pgen = PLINK2_VCF.out.pgen
-    ch_psam = PLINK2_VCF.out.psam
-    ch_pvar = PLINK2_VCF.out.pvar_zst
-    ch_vmiss_gz = PLINK2_VCF.out.vmiss_gz
-    ch_afreq_gz = PLINK2_VCF.out.afreq_gz
+    ch_pgen           = PLINK2_VCF.out.pgen
+    ch_psam           = PLINK2_VCF.out.psam
+    ch_pvar           = PLINK2_VCF.out.pvar_zst
+    ch_vmiss_gz       = PLINK2_VCF.out.vmiss_gz
+    ch_afreq_gz       = PLINK2_VCF.out.afreq_gz
 
 }
