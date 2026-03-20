@@ -17,7 +17,7 @@ process PGSCATALOG_MATCH {
     path "versions.yml", emit: versions
 
     script:
-    def prefix = task.ext.prefix ?: meta2.id
+    def prefix = task.ext.prefix ?: meta.id
     def args = task.ext.args ?: ""
     """
     pgscatalog-match \\
