@@ -99,11 +99,11 @@ echo "[INFO] Log directory:    $LOG_DIR"
 # -----------------------------------------------------------------------------
 # Build Nextflow command
 # -----------------------------------------------------------------------------
-NF_CMD="nextflow run main.nf"
+NF_CMD="nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
+NF_CMD+=" run main.nf"
 NF_CMD+=" --input $INPUT"
 NF_CMD+=" --outdir $OUTDIR"
 NF_CMD+=" -profile $PROFILE"
-NF_CMD+=" -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
 NF_CMD+=" -with-report ${LOG_DIR}/report_${TIMESTAMP}.html"
 NF_CMD+=" -with-trace ${LOG_DIR}/trace_${TIMESTAMP}.txt"
 NF_CMD+=" -with-timeline ${LOG_DIR}/timeline_${TIMESTAMP}.html"
@@ -132,7 +132,7 @@ set -euo pipefail
 echo "[INFO] Starting pipeline at \$(date)"
 echo "[INFO] Running on node: \$(hostname)"
 echo "[INFO] Command: $NF_CMD"
-
+export NXF_LOG_FILE="/var/log/nextflow.log"
 $NF_CMD
 
 echo "[INFO] Pipeline finished at \$(date)"
