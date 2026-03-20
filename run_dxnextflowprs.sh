@@ -134,7 +134,7 @@ set -euo pipefail
 echo "[INFO] Starting pipeline at \$(date)"
 echo "[INFO] Running on node: \$(hostname)"
 echo "[INFO] Command: $NF_CMD"
-export NXF_LOG_FILE="/var/log/nextflow.log"
+
 $NF_CMD
 
 echo "[INFO] Pipeline finished at \$(date)"
