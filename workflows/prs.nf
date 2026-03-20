@@ -94,9 +94,6 @@ workflow PRS {
             ch_genome_index
         )
     }
-    MERGE_PRS_MQC(
-        CALC_SCORES.out.ch_score_norm.collect()
-    )
 
     // QC step
     // ch_score_summary
