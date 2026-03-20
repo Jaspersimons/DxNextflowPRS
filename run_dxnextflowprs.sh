@@ -99,8 +99,10 @@ echo "[INFO] Log directory:    $LOG_DIR"
 # -----------------------------------------------------------------------------
 # Build Nextflow command
 # -----------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 NF_CMD="nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
-NF_CMD+=" run main.nf"
+NF_CMD+=" run ${SCRIPT_DIR}/main.nf"
 NF_CMD+=" --input $INPUT"
 NF_CMD+=" --outdir $OUTDIR"
 NF_CMD+=" -profile $PROFILE"
