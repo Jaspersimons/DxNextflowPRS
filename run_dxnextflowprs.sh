@@ -92,6 +92,7 @@ fi
 [[ ! "$EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] && { echo "[ERROR] Email address looks invalid: $EMAIL"; exit 1; }
 command -v nextflow &>/dev/null || { echo "[ERROR] nextflow not found in PATH"; exit 1; }
 
+mkdir -p "$OUTDIR" "$LOG_DIR"
 echo "[INFO] Output directory: $OUTDIR"
 echo "[INFO] Log directory:    $LOG_DIR"
 
