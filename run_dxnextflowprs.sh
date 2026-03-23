@@ -137,6 +137,19 @@ echo "[INFO] Command: $NF_CMD"
 
 $NF_CMD
 
+echo "[INFO] Nextflow done"
+echo "[INFO] Zip work directory"
+find work -type f | egrep "\.(command|exitcode)" | zip -@ -q work.zip
+
+echo "[INFO] Remove work directory"
+rm -r work
+
+echo "[INFO] Creating md5sum"
+find -type f -not -iname 'md5sum.txt' -exec md5sum {} \; > md5sum.txt
+
+echo "[INFO] Change permissions"
+chmod 770 -R $OUTDIR
+
 echo "[INFO] Pipeline finished at \$(date)"
 SBATCH_SCRIPT
 )
