@@ -15,13 +15,17 @@ workflow CALC_SCORES {
     )
 
     PGSCATALOG_MATCH(
-        ch_normalised_model,
         PLINK2_VCF.out.pvar_zst,
+        ch_normalised_model.collect()
     )
 
+
     PLINK2_SCORE(
-        PLINK2_VCF.out.pgen.join(PLINK2_VCF.out.psam).join(PLINK2_VCF.out.pvar).join(PLINK2_VCF.out.afreq),
-        PGSCATALOG_MATCH.out.scorefile.map { _meta, path -> path },
+        PLINK2_VCF.out.pgen
+            .join(PLINK2_VCF.out.psam)
+            .join(PLINK2_VCF.out.pvar)
+            .join(PLINK2_VCF.out.afreq)
+            .join(PGSCATALOG_MATCH.out.scorefile)
     )
 
     PGS_NORM(
