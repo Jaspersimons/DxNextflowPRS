@@ -11,9 +11,9 @@ process PGSCATALOG_MATCH {
 
 
     output:
-    tuple val(meta2), path("*_summary.csv"), emit: summary
-    tuple val(meta2), path("*.scorefile.gz"), emit: scorefile
-    tuple val(meta2), path("*_log.csv.gz"), emit: log
+    tuple val(meta), path("*_summary.csv"), emit: summary
+    tuple val(meta), path("*.scorefile.gz"), emit: scorefile
+    tuple val(meta), path("*_log.csv.gz"), emit: log
     path "versions.yml", emit: versions
 
     script:
