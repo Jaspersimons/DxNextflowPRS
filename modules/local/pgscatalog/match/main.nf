@@ -6,8 +6,9 @@ process PGSCATALOG_MATCH {
         : 'biocontainers/pgscatalog-utils:1.4.4--pyhdfd78af_0'}"
 
     input:
-    tuple val(meta), path(scoring_file)
-    tuple val(meta2), path(pvar)
+    tuple val(meta), path(pvar)
+    tuple val(meta2), path(scoring_file)
+
 
     output:
     tuple val(meta2), path("*_summary.csv"), emit: summary
@@ -16,7 +17,7 @@ process PGSCATALOG_MATCH {
     path "versions.yml", emit: versions
 
     script:
-    def prefix = task.ext.prefix ?: meta2.id
+    def prefix = task.ext.prefix ?: meta.id
     def args = task.ext.args ?: ""
     """
     pgscatalog-match \\

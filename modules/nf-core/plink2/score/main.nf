@@ -8,8 +8,7 @@ process PLINK2_SCORE {
 		: 'biocontainers/plink2:2.00a2.3--h712d239_1'}"
 
 	input:
-	tuple val(meta), path(pgen), path(psam), path(pvar), path(afreq)
-	path scorefile
+	tuple val(meta), path(pgen), path(psam), path(pvar), path(afreq), path(scorefile)
 
 	output:
 	tuple val(meta), path("*.sscore"), emit: score
