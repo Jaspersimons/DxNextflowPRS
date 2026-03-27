@@ -32,12 +32,23 @@ custom_data:
     section_name: "Ancestry PCA (flagged samples)"
     description: "Per-sample PCA plot for samples that were flagged (e.g. confidence < threshold or non-EUR)."
 
+  prs-scores:
+    section_name: "PRS Scores"
+    description: "Normalised Polygenic Risk Score results per sample"
+    file_format: "tsv"
+    plot_type: "table"
+    pconfig:
+      id: "prs-scores"
+      title: "PRS Scores"
+
 
 sp:
   ancestry_knn:
     fn: "ancestry_knn_mqc.tsv"
   ancestry_flagged_pca:
     fn: "*knn_pca.png"
+  prs-scores:
+    fn: "prs_scores_mqc.tsv"
 
 
 export_plots: true
