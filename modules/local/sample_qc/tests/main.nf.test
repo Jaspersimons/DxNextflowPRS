@@ -1,0 +1,129 @@
+nextflow_process {
+    name "Test Process SAMPLE_QC"
+    script "../main.nf"
+    process "SAMPLE_QC"
+
+    tag "modules"
+    tag "modules/local"
+    tag "QC"
+    tag "SAMPLE_QC"
+
+    test ("QC full PASS") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'sampleA'],
+                    file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/ref_full_pass_knn.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            def csvFile = path(process.out.score_qc[0][1]).csv(sep: "\t")
+
+            assertAll(
+                { assert process.success },
+                { assert csvFile.columns["QC status"] == ["PASS"] },
+                { assert csvFile.columns["QC Comment"] == [""] }
+            )
+        }
+    }
+
+    test ("QC matchrate FAIL") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'sampleA'],
+                    file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/ref_full_pass_knn.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/summary_fail.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            def csvFile = path(process.out.score_qc[0][1]).csv(sep: "\t")
+
+            assertAll(
+                { assert process.success },
+                { assert csvFile.columns["QC status"] == ["FAIL"] },
+                { assert csvFile.columns["QC Comment"] == ["INSUFFICIENT_VARIANT_COVERAGE"] }
+            )
+        }
+    }
+
+    test ("QC ref conf FAIL") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'sampleA'],
+                    file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/ref_conf_fail_knn.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            def csvFile = path(process.out.score_qc[0][1]).csv(sep: "\t")
+
+            assertAll(
+                { assert process.success },
+                { assert csvFile.columns["QC status"] == ["FAIL"] },
+                { assert csvFile.columns["QC Comment"] == ["LOW_REFERENCE_PANEL_CONFIDENCE"] }
+            )
+        }
+    }
+    test ("QC ref panel FAIL") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'sampleA'],
+                    file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/ref_panel_fail_knn.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            def csvFile = path(process.out.score_qc[0][1]).csv(sep: "\t")
+
+            assertAll(
+                { assert process.success },
+                { assert csvFile.columns["QC status"] == ["FAIL"] },
+                { assert csvFile.columns["QC Comment"] == ["REFERENCE_PANEL_MISMATCH"] }
+            )
+        }
+    }
+    test ("QC full FAIL") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: 'sampleA'],
+                    file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/ref_full_fail_knn.tsv", checkIfExists: true),
+                    file("${projectDir}/assets/test-data/sampleQC/summary_fail.csv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+        then {
+            def csvFile = path(process.out.score_qc[0][1]).csv(sep: "\t")
+
+            assertAll(
+                { assert process.success },
+                { assert csvFile.columns["QC status"] == ["FAIL"] },
+                { assert csvFile.columns["QC Comment"] == ["REFERENCE_PANEL_MISMATCH;LOW_REFERENCE_PANEL_CONFIDENCE;INSUFFICIENT_VARIANT_COVERAGE"] }
+            )
+        }
+    }
+
+}
