@@ -58,7 +58,6 @@ def calc_model_matchrate(model_df: pd.DataFrame) -> float:
     Returns:
         Matchrate as a fraction between 0 and 1.
     """
-    print(model_df)
     matched_vars = model_df[model_df["match_status"] == "matched"]
     match_rate = matched_vars["percent"].sum() / 100
     return match_rate
@@ -104,15 +103,15 @@ def main(
     ],
     conf_threshold: Annotated[
         float,
-        typer.Option("--conf-threshold", help="Minimum ancestry confidence to pass QC."),
+        typer.Option("--conf-threshold", help="Minimum ancestry confidence to pass QC. (default: 0.6)"),
     ] = 0.6,
     expected_ancestry: Annotated[
         List[str],
-        typer.Option("--expected-ancestry", help="Expected superpopulation label(s). Can be passed multiple times."),
+        typer.Option("--expected-ancestry", help="Expected superpopulation label(s). Can be passed multiple times. (default: EUR)"),
     ] = ["EUR"],
     matchrate_threshold: Annotated[
         float,
-        typer.Option("--matchrate-threshold", help="Minimum model matchrate (i.e., percentage of variants in the model that are in the sample )"),
+        typer.Option("--matchrate-threshold", help="Minimum model matchrate (i.e., percentage of variants in the model that are in the sample. (default: 0.75) )"),
     ] = 0.75
 ) -> None:
     """Run sample QC checks and write a MultiQC-compatible table."""

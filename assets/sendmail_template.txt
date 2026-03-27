@@ -9,10 +9,11 @@ Content-Type: text/html; charset=utf-8
 $email_html
 
 <%
+// Attach the MultiQC report if a file path was provided and the file is within the size limit
 if (mqcFile){
-def mqcFileObj = new File("$mqcFile")
-if (mqcFileObj.length() < mqcMaxSize){
-out << """
+    def mqcFileObj = new File("$mqcFile")
+    if (mqcFileObj.length() < mqcMaxSize){
+        out << """
 --nfcoremimeboundary
 Content-Type: text/html; name=\"multiqc_report\"
 Content-Transfer-Encoding: base64
@@ -25,12 +26,13 @@ ${mqcFileObj.
     toString().
     tokenize( '\n' )*.
     toList()*.
-    collate( 76 )*.
+    collate( 76 )*.  // Split into 76-character lines per MIME base64 spec
     collect { it.join() }.
     flatten().
     join( '\n' )}
 """
-}}
+    }
+}
 %>
 
 --nfcoremimeboundary--

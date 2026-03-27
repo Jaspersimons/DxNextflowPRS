@@ -8,44 +8,60 @@
   <title>UMCUGenetics/DxNextflowPRS Pipeline Report</title>
 </head>
 <body>
-<div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto;">
+  <!-- Centered, max-width container for the report content -->
+  <div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto;">
 
-<h1>UMCUGenetics/DxNextflowPRS ${version}</h1>
-<h2>Run Name: $runName</h2>
+    <!-- Pipeline name and run identifier -->
+    <h1>UMCUGenetics/DxNextflowPRS ${version}</h1>
+    <h2>Run Name: $runName</h2>
 
-<% if (!success){
-    out << """
-    <div style="color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        <h4 style="margin-top:0; color: inherit;">UMCUGenetics/dxnextflowprs execution completed unsuccessfully!</h4>
-        <p>The exit status of the task that caused the workflow execution to fail was: <code>$exitStatus</code>.</p>
-        <p>The full error message was:</p>
-        <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0;">${errorReport}</pre>
-    </div>
-    """
-} else {
-    out << """
-    <div style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
-        UMCUGenetics/dxnextflowprs execution completed successfully!
-    </div>
-    """
-}
-%>
+    <!-- Success/failure banner: red on failure (with exit code and error report), green on success -->
+    <% if (!success){
+        out << """
+        <div style="color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+            <h4 style="margin-top: 0; color: inherit;">UMCUGenetics/dxnextflowprs execution completed unsuccessfully!</h4>
+            <p>The exit status of the task that caused the workflow execution to fail was: <code>$exitStatus</code>.</p>
+            <p>The full error message was:</p>
+            <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0;">${errorReport}</pre>
+        </div>
+        """
+    } else {
+        out << """
+        <div style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+            UMCUGenetics/dxnextflowprs execution completed successfully!
+        </div>
+        """
+    }
+    %>
 
-<p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
-<p>The command used to launch the workflow was as follows:</p>
-<pre style="white-space: pre-wrap; overflow: visible; background-color: #ededed; padding: 15px; border-radius: 4px; margin-bottom:30px;">$commandLine</pre>
+    <!-- Completion timestamp and total duration -->
+    <p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
 
-<h3>Pipeline Configuration:</h3>
-<table style="width:100%; max-width:100%; border-spacing: 0; border-collapse: collapse; border:0; margin-bottom: 30px;">
-    <tbody style="border-bottom: 1px solid #ddd;">
-        <% out << summary.collect{ k,v -> "<tr><th style='text-align:left; padding: 8px 0; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'>$k</th><td style='text-align:left; padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'><pre style='white-space: pre-wrap; overflow: visible;'>$v</pre></td></tr>" }.join("\n") %>
-    </tbody>
-</table>
+    <!-- Full Nextflow command used to invoke this pipeline run -->
+    <p>The command used to launch the workflow was as follows:</p>
+    <pre style="white-space: pre-wrap; overflow: visible; background-color: #ededed; padding: 15px; border-radius: 4px; margin-bottom: 30px;">$commandLine</pre>
 
-<p>UMCUGenetics/dxnextflowprs</p>
-<p><a href="https://github.com/UMCUGenetics/DxNextflowPRS">https://github.com/UMCUGenetics/dxnextflowprs</a></p>
+    <!-- Key/value table of all pipeline parameters and configuration values -->
+    <h3>Pipeline Configuration:</h3>
+    <table style="width: 100%; max-width: 100%; border-spacing: 0; border-collapse: collapse; border: 0; margin-bottom: 30px;">
+      <tbody style="border-bottom: 1px solid #ddd;">
+        <% out << summary.collect{ k,v ->
+            "<tr>" +
+                "<th style='text-align: left; padding: 8px 0; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'>$k</th>" +
+                "<td style='text-align: left; padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'>" +
+                    "<pre style='white-space: pre-wrap; overflow: visible;'>$v</pre>" +
+                "</td>" +
+            "</tr>"
+        }.join("\n") %>
 
-</div>
 
+      </tbody>
+    </table>
+
+    <!-- Footer: pipeline name and link to repository -->
+    <p>UMCUGenetics/dxnextflowprs</p>
+    <p><a href="https://github.com/UMCUGenetics/DxNextflowPRS">https://github.com/UMCUGenetics/dxnextflowprs</a></p>
+
+  </div>
 </body>
 </html>
