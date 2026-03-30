@@ -6,14 +6,14 @@
                     {
                         "id": "BCAC_313"
                     },
-                    "BCAC_313_snplist.list:md5,3e21c088d2044dcf23e4f300fa7e5e72"
+                    "BCAC_313_snplist.list:md5,619559e7a22c880d3f60767023933618"
                 ]
             ]
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.7"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-01-27T11:36:29.149807"
+        "timestamp": "2026-03-30T09:55:40.717633"
     }
 }
