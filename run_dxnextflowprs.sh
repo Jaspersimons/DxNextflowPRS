@@ -101,7 +101,7 @@ echo "[INFO] Log directory:    $LOG_DIR"
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-NF_CMD="nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
+NF_CMD="${SCRIPT_DIR}/tools/nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
 NF_CMD+=" run ${SCRIPT_DIR}/main.nf"
 NF_CMD+=" --input $INPUT"
 NF_CMD+=" --outdir $OUTDIR"
@@ -136,6 +136,7 @@ echo "[INFO] Running on node: \$(hostname)"
 echo "[INFO] Command: $NF_CMD"
 
 export NXF_JAVA_HOME='/hpc/diaggen/software/tools/jdk-18.0.2.1/'
+
 
 $NF_CMD
 
