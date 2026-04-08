@@ -135,6 +135,8 @@ echo "[INFO] Starting pipeline at \$(date)"
 echo "[INFO] Running on node: \$(hostname)"
 echo "[INFO] Command: $NF_CMD"
 
+export NXF_JAVA_HOME='/hpc/diaggen/software/tools/jdk-18.0.2.1/'
+
 $NF_CMD
 
 echo "[INFO] Nextflow done"
