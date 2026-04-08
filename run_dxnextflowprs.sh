@@ -90,7 +90,7 @@ fi
 
 [[ ! -e "$INPUT" ]] && { echo "[ERROR] Input path does not exist: $INPUT"; exit 1; }
 [[ ! "$EMAIL" =~ ^[^@]+@[^@]+\.[^@]+$ ]] && { echo "[ERROR] Email address looks invalid: $EMAIL"; exit 1; }
-command -v nextflow &>/dev/null || { echo "[ERROR] nextflow not found in PATH"; exit 1; }
+
 
 mkdir -p "$OUTDIR" "$LOG_DIR"
 echo "[INFO] Output directory: $OUTDIR"
@@ -100,8 +100,9 @@ echo "[INFO] Log directory:    $LOG_DIR"
 # Build Nextflow command
 # -----------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+command -v ${SCRIPT_DIR}/tools/nextflow &>/dev/null || { echo "[ERROR] nextflow not found in PATH"; exit 1; }
 
-NF_CMD="nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
+NF_CMD="${SCRIPT_DIR}/tools/nextflow -log ${LOG_DIR}/nextflow_${TIMESTAMP}.log"
 NF_CMD+=" run ${SCRIPT_DIR}/main.nf"
 NF_CMD+=" --input $INPUT"
 NF_CMD+=" --outdir $OUTDIR"
@@ -134,6 +135,9 @@ set -euo pipefail
 echo "[INFO] Starting pipeline at \$(date)"
 echo "[INFO] Running on node: \$(hostname)"
 echo "[INFO] Command: $NF_CMD"
+
+export NXF_JAVA_HOME='/hpc/diaggen/software/tools/jdk-18.0.2.1/'
+
 
 $NF_CMD
 
