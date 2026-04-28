@@ -14,7 +14,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: 'sampleA'],
+                    [id: 'sampleA__BCAC_313_PRS', sample_id: 'sampleA', model_id: 'BCAC_313_PRS', alpha: 1],
                     file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/ref_full_pass_knn.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
@@ -38,7 +38,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: 'sampleA'],
+                    [id: 'sampleA__BCAC_313_PRS', sample_id: 'sampleA', model_id: 'BCAC_313_PRS', alpha: 1],
                     file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/ref_full_pass_knn.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/summary_fail.csv", checkIfExists: true)
@@ -62,7 +62,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: 'sampleA'],
+                    [id: 'sampleA__BCAC_313_PRS', sample_id: 'sampleA', model_id: 'BCAC_313_PRS', alpha: 1],
                     file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/ref_conf_fail_knn.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
@@ -85,7 +85,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: 'sampleA'],
+                    [id: 'sampleA__BCAC_313_PRS', sample_id: 'sampleA', model_id: 'BCAC_313_PRS', alpha: 1],
                     file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/ref_panel_fail_knn.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/summary_pass.csv", checkIfExists: true)
@@ -108,7 +108,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: 'sampleA'],
+                    [id: 'sampleA__BCAC_313_PRS', sample_id: 'sampleA', model_id: 'BCAC_313_PRS', alpha: 1],
                     file("${projectDir}/assets/test-data/sampleQC/counts.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/ref_full_fail_knn.tsv", checkIfExists: true),
                     file("${projectDir}/assets/test-data/sampleQC/summary_fail.csv", checkIfExists: true)

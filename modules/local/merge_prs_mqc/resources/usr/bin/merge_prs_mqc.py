@@ -17,16 +17,16 @@ for f in files:
     dfs.append(df)
 
 combined = pd.concat(dfs, ignore_index=True)
-combined = combined.drop(columns=['#FID', 'SCORE1_AVG', 'DENOM', 'NAMED_ALLELE_DOSAGE_SUM'], errors='ignore')
 combined = combined.rename(columns={
-    'IID': 'Sample',
-    'SCORE1_SUM': 'Raw_score',
     'SUM_Z': 'Z-score',
+    'QC status': 'QC Status',
 })
+combined = combined[['Sample', 'Model', 'Z-score', 'QC Status', 'QC Comment', 'Model Alpha']]
+combined = combined.sort_values(['Sample', 'Model']).reset_index(drop=True)
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
     out.write("# section_name: 'PRS Scores'\n")
-    out.write("# description: 'Normalised Polygenic Risk Score results per sample'\n")
+    out.write("# description: 'Normalised Polygenic Risk Score results per (sample, model)'\n")
     out.write("# plot_type: 'table'\n")
     combined.to_csv(out, sep='\t', index=False)

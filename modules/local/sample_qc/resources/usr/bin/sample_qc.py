@@ -101,6 +101,18 @@ def main(
         Path,
         typer.Option("--output", "-o", help="Output QC TSV path."),
     ],
+    sample: Annotated[
+        str,
+        typer.Option("--sample", help="Sample ID to tag onto every row."),
+    ],
+    model: Annotated[
+        str,
+        typer.Option("--model", help="Model ID to tag onto every row."),
+    ],
+    alpha: Annotated[
+        float,
+        typer.Option("--alpha", help="Model alpha value to tag onto every row."),
+    ],
     conf_threshold: Annotated[
         float,
         typer.Option("--conf-threshold", help="Minimum ancestry confidence to pass QC. (default: 0.6)"),
@@ -126,7 +138,14 @@ def main(
     typer.echo(f"Model matchrate:{model_matchrate}")
     qc_df = combined_df.apply(QC_check, args=(expected_ancestry, conf_threshold, model_matchrate, matchrate_threshold), axis=1)
 
-    qc_df = qc_df.filter(items=["IID", "SCORE1_SUM", "SUM_Z", "Model Matchrate", "QC status", "QC Comment"])
+    qc_df["Sample"] = sample
+    qc_df["Model"] = model
+    qc_df["Model Alpha"] = alpha
+
+    qc_df = qc_df.filter(items=[
+        "Sample", "Model", "SCORE1_SUM", "SUM_Z",
+        "Model Matchrate", "QC status", "QC Comment", "Model Alpha",
+    ])
 
     qc_df.to_csv(output, sep='\t', index=False)
 
