@@ -54,7 +54,7 @@ workflow PRS {
         .splitCsv(header: true)
         .map { row ->
             def meta = [id: row.modelID, mu: row.mu, sd: row.sd, alpha: row.alpha]
-            [meta, file("${projectDir}/assets/models/${row.path}"), row.mu, row.sd, row.alpha]
+            [meta, file("${projectDir}/assets/models/${row.path}")]
         }
 
 
@@ -120,6 +120,7 @@ workflow PRS {
             )
             .map { _sid, m, n, s, k -> [m, n, k, s] }
     )
+
 
     MERGE_PRS_MQC(
         SAMPLE_QC.out.score_qc.map{ _meta, tsv -> tsv }.collect()
