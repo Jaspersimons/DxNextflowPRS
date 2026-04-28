@@ -1,0 +1,26 @@
+#pgs_name=test_model
+#pgs_id=test_model
+#trait_reported=Fake trait
+#genome_build=GRCh38
+#variants_number=20
+chr_name	chr_position	effect_allele	other_allele	effect_weight
+chr22	5639	T	T	0.1739
+chr22	6251	T	A	-0.3498
+chr22	7469	A	T	-0.2288
+chr22	7540	A	A	-0.9257
+chr22	10922	T	A	-0.7260
+chr22	13750	A	T	-0.2875
+chr22	16139	A	T	0.4821
+chr22	17405	A	A	0.6589
+chr22	18463	T	A	-0.1047
+chr22	19047	T	A	0.8946
+chr22	21385	A	T	-0.6512
+chr22	22043	A	T	-0.2038
+chr22	23956	T	A	0.3654
+chr22	27892	A	T	-0.1132
+chr22	31410	T	A	-0.7798
+chr22	33896	A	T	0.9124
+chr22	35401	T	A	0.2946
+chr22	36789	A	T	-0.4863
+chr22	37429	T	A	0.1437
+chr22	39255	A	T	-0.6724
