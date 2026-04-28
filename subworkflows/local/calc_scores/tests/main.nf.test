@@ -2,7 +2,7 @@ nextflow_workflow {
     name "Test Subworkflow PRS score calculation"
     script "../main.nf"
     workflow "CALC_SCORES"
-    
+
 
 
     tag "subworkflows"
@@ -13,19 +13,19 @@ nextflow_workflow {
 
     test("Validate scoring workflow"){
 
-        
-        
+
+
         when {
             workflow {
             """
-                input[0] = [
-                    [id: "vcf"],
+                input[0] = Channel.of([
+                    [id: "vcf", model_id: "model", mu: "-0.424", sd: "0.611"],
                     file("${projectDir}/assets/test-data/test.vcf", checkIfExists: true)
-                ]  
-                input[1] = [
-                    [id: "model"],
+                ])
+                input[1] = Channel.of([
+                    [id: "model", mu: "-0.424", sd: "0.611"],
                     file("${projectDir}/assets/test-data/norm_test_model_subworkflow.txt.gz", checkIfExists: true)
-                ]
+                ])
             """
             }
         }
@@ -49,4 +49,3 @@ nextflow_workflow {
         }
     }
 }
-

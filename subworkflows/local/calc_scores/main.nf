@@ -9,6 +9,7 @@ workflow CALC_SCORES {
     ch_normalised_model
 
     main:
+    ch_vcf.view()
 
     PLINK2_VCF(
         ch_vcf
