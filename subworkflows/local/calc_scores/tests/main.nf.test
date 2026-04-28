@@ -23,7 +23,7 @@ nextflow_workflow {
                     file("${projectDir}/assets/test-data/test.vcf", checkIfExists: true)
                 ])
                 input[1] = Channel.of([
-                    [id: "model", mu: "-0.424", sd: "0.611"],
+                    [id: "model"],
                     file("${projectDir}/assets/test-data/norm_test_model_subworkflow.txt.gz", checkIfExists: true)
                 ])
             """
