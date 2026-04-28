@@ -35,8 +35,8 @@ workflow PRS_INTERVALS {
 
     emit:
     list             = GET_SNPLIST.out.list
-    vcf              = BCFTOOLS_SORT.out.vcf.collect()
-    tbi              = BCFTOOLS_SORT.out.tbi.collect()
+    vcf              = BCFTOOLS_SORT.out.vcf
+    tbi              = BCFTOOLS_SORT.out.tbi
     normalised_model = PGSCATALOG_COMBINE.out.normalised_model
     ch_versions      = ch_versions
 }

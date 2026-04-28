@@ -6,8 +6,6 @@ process PGS_NORM {
 
     input:
     tuple val(meta), path(prs_scores)
-    val mu
-    val sd
 
     output:
     tuple val(meta), path ("*_normalised_counts.tsv"), emit: tsv
@@ -17,8 +15,8 @@ process PGS_NORM {
     """
     normalise_counts.py \\
         --PRS ${prs_scores} \\
-        --mu ${mu} \\
-        --SD ${sd} \\
+        --mu ${meta.mu} \\
+        --SD ${meta.sd} \\
         -o ${prefix}_normalised_counts.tsv
     """
 

@@ -14,9 +14,21 @@ workflow CALC_SCORES {
         ch_vcf
     )
 
+    // Pair each (sample, model) pvar with the matching model's normalised scorefile by model_id.
+    ch_match_input = PLINK2_VCF.out.pvar_zst
+        .map { meta, pvar -> [meta.model_id, meta, pvar] }
+        .combine(
+            ch_normalised_model.map { meta, m -> [meta.id, m] },
+            by: 0
+        )
+        .multiMap { _mid, sm_meta, pvar, m ->
+            target:    [sm_meta, pvar]
+            scorefile: [sm_meta, m]
+        }
+
     PGSCATALOG_MATCH(
-        PLINK2_VCF.out.pvar_zst,
-        ch_normalised_model.collect()
+        ch_match_input.target,
+        ch_match_input.scorefile,
     )
 
 
@@ -29,9 +41,7 @@ workflow CALC_SCORES {
     )
 
     PGS_NORM(
-        PLINK2_SCORE.out.score,
-        params.model_mu,
-        params.model_sd,
+        PLINK2_SCORE.out.score
     )
 
 

@@ -49,9 +49,14 @@ workflow PRS {
 		.map { file -> [['id': file.getSimpleName()], file] }
 		.collect()
 
-    ch_PRS_model = Channel.fromPath(params.prs_model)
-		.map { path -> [['id': path.getSimpleName()], path] }
-		.collect()
+
+    ch_PRS_model = Channel.fromPath(params.prs_models)
+        .splitCsv(header: true)
+        .map { row ->
+            def meta = [id: row.modelID, mu: row.mu, sd: row.sd, alpha: row.alpha]
+            [meta, file("${projectDir}/assets/models/${row.path}"), row.mu, row.sd, row.alpha]
+        }
+
 
 
     PRS_INTERVALS(ch_PRS_model)
@@ -85,9 +90,18 @@ workflow PRS {
             .map {meta -> [[id: meta.getSimpleName()], meta]}
             .first()
 
+        ch_ancestry_vcf = VARIANT_CALLING.out.vcf
+            .map { meta, vcf -> [meta.sample_id, vcf] }
+            .groupTuple()
+            .map { sid, vcfs -> [[id: sid], vcfs[0]] }
+
+        ch_ancestry_tbi = VARIANT_CALLING.out.tbi
+            .map { meta, tbi -> [meta.sample_id, tbi] }
+            .groupTuple()
+            .map { sid, tbis -> [[id: sid], tbis[0]] }
+
         ANCESTRY(
-            VARIANT_CALLING.out.vcf
-                .join(VARIANT_CALLING.out.tbi),
+            ch_ancestry_vcf.join(ch_ancestry_tbi),
             ch_ref_vcf,
             ch_ref_meta,
             ch_genome_fasta,
@@ -95,12 +109,16 @@ workflow PRS {
         )
     }
 
-    // QC step
-    // ch_score_summary
+    // QC step — combined meta carries (sample_id, model_id); ancestry is per-sample only.
     SAMPLE_QC(
         CALC_SCORES.out.ch_score_norm
-            .join(ANCESTRY.out.knn_tsv)
             .join(CALC_SCORES.out.ch_score_summary)
+            .map { m, n, s -> [m.sample_id, m, n, s] }
+            .combine(
+                ANCESTRY.out.knn_tsv.map { m, k -> [m.id, k] },
+                by: 0
+            )
+            .map { _sid, m, n, s, k -> [m, n, k, s] }
     )
 
     MERGE_PRS_MQC(
