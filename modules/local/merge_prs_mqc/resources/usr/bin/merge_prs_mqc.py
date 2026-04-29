@@ -31,6 +31,8 @@ sample_bgcols = {s: palette[i % len(palette)] for i, s in enumerate(unique_sampl
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
+    out.write("# pconfig:\n")
+    out.write("#     only_defined_headers: false\n")
     out.write("# headers:\n")
     out.write("#     Sample:\n")
     out.write("#         bgcols:\n")
