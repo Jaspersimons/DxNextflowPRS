@@ -25,6 +25,15 @@ combined = combined[['Sample', 'Model', 'Z-score', 'QC Status', 'QC Comment', 'M
 combined.insert(0, 'Sample_Model', combined['Sample'] + '__' + combined['Model'])
 combined = combined.sort_values(['Sample', 'Model']).reset_index(drop=True)
 
+unique_samples = combined['Sample'].drop_duplicates().tolist()
+palette = ["#e8f0fe", "#ffffff"]   # very light blue / white — subtle stripes
+sample_bgcols = {s: palette[i % len(palette)] for i, s in enumerate(unique_samples)}
+
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
+    out.write("# headers:\n")
+    out.write("#     Sample:\n")
+    out.write("#         bgcols:\n")
+    for s, c in sample_bgcols.items():
+        out.write(f"#             '{s}': '{c}'\n")
     combined.to_csv(out, sep='\t', index=False)
