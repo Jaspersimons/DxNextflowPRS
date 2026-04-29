@@ -2,12 +2,12 @@
 #format_version=2.0
 ##POLYGENIC SCORE (PGS) INFORMATION
 #pgs_id=PGS000004
-#pgs_name=PRS313_BC_noCHEK2
+#pgs_name=PRS311_BC
 #trait_reported=Breast cancer
 #trait_mapped=breast carcinoma
 #trait_efo=EFO_0000305
 #genome_build=GRCh37
-#variants_number=313
+#variants_number=311
 #weight_type=NR
 ##SOURCE INFORMATION
 #pgp_id=PGP000002
