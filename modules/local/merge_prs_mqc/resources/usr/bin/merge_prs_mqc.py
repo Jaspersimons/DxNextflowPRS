@@ -27,7 +27,4 @@ combined = combined.sort_values(['Sample', 'Model']).reset_index(drop=True)
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
-    out.write("# section_name: 'PRS Scores'\n")
-    out.write("# description: 'Normalised Polygenic Risk Score results per (sample, model)'\n")
-    out.write("# plot_type: 'table'\n")
     combined.to_csv(out, sep='\t', index=False)
