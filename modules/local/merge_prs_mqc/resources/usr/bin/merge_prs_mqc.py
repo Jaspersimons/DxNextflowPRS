@@ -22,6 +22,7 @@ combined = combined.rename(columns={
     'QC status': 'QC Status',
 })
 combined = combined[['Sample', 'Model', 'Z-score', 'QC Status', 'QC Comment', 'Model Alpha']]
+combined.insert(0, 'Sample_Model', combined['Sample'] + '__' + combined['Model'])
 combined = combined.sort_values(['Sample', 'Model']).reset_index(drop=True)
 
 with open('prs_scores_mqc.tsv', 'w') as out:
