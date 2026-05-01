@@ -26,16 +26,43 @@ combined.insert(0, 'Sample_Model', combined['Sample'] + '__' + combined['Model']
 combined = combined.sort_values(['Sample', 'Model']).reset_index(drop=True)
 
 unique_samples = combined['Sample'].drop_duplicates().tolist()
-palette = ["#e8f0fe", "#ffffff"]   # very light blue / white — subtle stripes
-sample_bgcols = {s: palette[i % len(palette)] for i, s in enumerate(unique_samples)}
+sample_palette = ["#e8f0fe", "#ffffff"]   # blue / white — sample stripes
+sample_bgcols = {s: sample_palette[i % len(sample_palette)] for i, s in enumerate(unique_samples)}
+
+# Sample_Model rows align 1:1 with Sample rows — reuse the sample palette,
+# keyed on the composite "${Sample}__${Model}" value.
+sample_model_bgcols = {
+    sm: sample_bgcols[s]
+    for sm, s in zip(combined['Sample_Model'], combined['Sample'])
+}
+
+unique_models = combined['Model'].drop_duplicates().tolist()
+# Pastel palette — distinct color per model so the same model is recognisable
+# across all samples. Wraps after 8 models (rare in practice).
+model_palette = [
+    "#fff4e5",  # peach
+    "#eaf7ea",  # mint
+    "#e3eafe",  # lavender-blue
+    "#fde7f3",  # pink
+    "#fff9c4",  # pale yellow
+    "#e0f7fa",  # pale cyan
+    "#f3e5f5",  # pale lilac
+    "#efebe9",  # warm grey
+]
+model_bgcols = {m: model_palette[i % len(model_palette)] for i, m in enumerate(unique_models)}
+
+def _emit_bgcols(out, column, mapping):
+    out.write(f"#     {column}:\n")
+    out.write("#         bgcols:\n")
+    for k, c in mapping.items():
+        out.write(f"#             '{k}': '{c}'\n")
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
     out.write("# pconfig:\n")
     out.write("#     only_defined_headers: false\n")
     out.write("# headers:\n")
-    out.write("#     Sample:\n")
-    out.write("#         bgcols:\n")
-    for s, c in sample_bgcols.items():
-        out.write(f"#             '{s}': '{c}'\n")
+    _emit_bgcols(out, 'Sample_Model', sample_model_bgcols)
+    _emit_bgcols(out, 'Sample', sample_bgcols)
+    _emit_bgcols(out, 'Model', model_bgcols)
     combined.to_csv(out, sep='\t', index=False)
