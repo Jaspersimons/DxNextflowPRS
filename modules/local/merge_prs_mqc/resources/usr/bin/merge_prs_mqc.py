@@ -40,14 +40,14 @@ unique_models = combined['Model'].drop_duplicates().tolist()
 # Pastel palette — distinct color per model so the same model is recognisable
 # across all samples. Wraps after 8 models (rare in practice).
 model_palette = [
-    "#fff4e5",  # peach
-    "#eaf7ea",  # mint
-    "#e3eafe",  # lavender-blue
-    "#fde7f3",  # pink
-    "#fff9c4",  # pale yellow
-    "#e0f7fa",  # pale cyan
-    "#f3e5f5",  # pale lilac
-    "#efebe9",  # warm grey
+    "#ffd9b3",  # peach
+    "#b3d9f0",  # sky blue
+    "#fff2a8",  # pale yellow
+    "#d4b8e8",  # lavender
+    "#a8d8c8",  # mint teal
+    "#f5b8c8",  # rose pink
+    "#d9c4a3",  # warm sand
+    "#e0e0e0",  # soft grey
 ]
 model_bgcols = {m: model_palette[i % len(model_palette)] for i, m in enumerate(unique_models)}
 
