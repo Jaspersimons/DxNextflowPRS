@@ -1,4 +1,5 @@
-include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main' 
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { BCFTOOLS_NORM         } from '../../../modules/nf-core/bcftools/norm/main'
 
 workflow VARIANT_CALLING {
     take:
@@ -10,7 +11,7 @@ workflow VARIANT_CALLING {
     ch_dbsnp_index
     ch_snp_list
     ch_snp_vcf
-    
+
 
     main:
 
@@ -41,12 +42,18 @@ workflow VARIANT_CALLING {
         ch_hc.alleles
     )
 
+    BCFTOOLS_NORM(
+        GATK4_HAPLOTYPECALLER.out.vcf
+            .join(GATK4_HAPLOTYPECALLER.out.tbi),
+        ch_genome_fasta
+    )
+
     // Collate software versions
     ch_versions = Channel.empty()
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
     emit:
-    vcf         = GATK4_HAPLOTYPECALLER.out.vcf
-    tbi         = GATK4_HAPLOTYPECALLER.out.tbi
+    vcf         = BCFTOOLS_NORM.out.vcf
+    tbi         = BCFTOOLS_NORM.out.tbi
     ch_versions = ch_versions
 }
