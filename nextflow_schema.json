@@ -237,21 +237,14 @@
             "fa_icon": "fas fa-calculator",
             "description": "Options used for polygenic risk score calculation",
             "properties": {
-                "prs_model": {
+                "prs_models": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Path to the PRS model file",
-                    "exists": true
-                },
-                "model_mu": {
-                    "type": ["number", "string"],
-                    "description": "Mean value of the model (mu)",
-                    "default": -0.424
-                },
-                "model_sd": {
-                    "type": ["number", "string"],
-                    "description": "Standard deviation of the model (sd)",
-                    "default": 0.611
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to a CSV samplesheet listing the PRS models to apply (columns: modelID, path, mu, sd, alpha). Each sample is processed against every model in this file.",
+                    "exists": true,
+                    "fa_icon": "fas fa-file-csv"
                 }
             }
         },
