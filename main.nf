@@ -22,14 +22,13 @@ workflow CALC_SCORES_ONLY {
     //
     // Entry Point: calculate only PRS scores for the given vcf files and model
     //
-    ch_normalised_model = channel.fromPath("${params.normalised_model}")
-        .map { path -> [ [id: path.getSimpleName()], path ] }
-		.first()
+    def model_id = file(params.normalised_model).getSimpleName()
 
+    ch_normalised_model = channel.fromPath("${params.normalised_model}")
+        .map { path -> [ [id: model_id], path ] }
 
     ch_vcf = channel.fromPath("${params.input}/*.vcf.gz")
         .map { vcf ->
-            def model_id = ch_normalised_model[0].id
             [ [id: vcf.getSimpleName(), model_id: model_id, mu: params.model_mu, sd: params.model_sd ], vcf ] }
 
 
