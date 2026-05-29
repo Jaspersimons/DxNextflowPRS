@@ -79,35 +79,34 @@ workflow PRS {
 
 
 
-    if (params.run_ancestry) {
-        ch_ref_vcf = Channel.of([
-            file("${params.ancestry_db}", checkIfExists: true),
-            file("${params.ancestry_db}.tbi", checkIfExists: true)
-        ])
-            .map { vcf, tbi -> [ [id: vcf.getSimpleName()], vcf, tbi ] }
-            .first()
-        ch_ref_meta = Channel.fromPath("${params.ancestry_db_meta}")
-            .map {meta -> [[id: meta.getSimpleName()], meta]}
-            .first()
+    ch_ref_vcf = Channel.of([
+        file("${params.ancestry_db}", checkIfExists: true),
+        file("${params.ancestry_db}.tbi", checkIfExists: true)
+    ])
+        .map { vcf, tbi -> [ [id: vcf.getSimpleName()], vcf, tbi ] }
+        .first()
+    ch_ref_meta = Channel.fromPath("${params.ancestry_db_meta}")
+        .map {meta -> [[id: meta.getSimpleName()], meta]}
+        .first()
 
-        ch_ancestry_vcf = VARIANT_CALLING.out.vcf
-            .map { meta, vcf -> [meta.sample_id, vcf] }
-            .groupTuple()
-            .map { sid, vcfs -> [[id: sid], vcfs[0]] }
+    ch_ancestry_vcf = VARIANT_CALLING.out.vcf
+        .map { meta, vcf -> [meta.sample_id, vcf] }
+        .groupTuple()
+        .map { sid, vcfs -> [[id: sid], vcfs[0]] }
 
-        ch_ancestry_tbi = VARIANT_CALLING.out.tbi
-            .map { meta, tbi -> [meta.sample_id, tbi] }
-            .groupTuple()
-            .map { sid, tbis -> [[id: sid], tbis[0]] }
+    ch_ancestry_tbi = VARIANT_CALLING.out.tbi
+        .map { meta, tbi -> [meta.sample_id, tbi] }
+        .groupTuple()
+        .map { sid, tbis -> [[id: sid], tbis[0]] }
 
-        ANCESTRY(
-            ch_ancestry_vcf.join(ch_ancestry_tbi),
-            ch_ref_vcf,
-            ch_ref_meta,
-            ch_genome_fasta,
-            ch_genome_index
-        )
-    }
+    ANCESTRY(
+        ch_ancestry_vcf.join(ch_ancestry_tbi),
+        ch_ref_vcf,
+        ch_ref_meta,
+        ch_genome_fasta,
+        ch_genome_index
+    )
+
 
     // QC step — combined meta carries (sample_id, model_id); ancestry is per-sample only.
     SAMPLE_QC(

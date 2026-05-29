@@ -254,12 +254,6 @@
             "fa_icon": "fas fa-globe",
             "description": "Options used for ancestry analysis",
             "properties": {
-                "run_ancestry": {
-                    "type": "boolean",
-                    "description": "Whether to run ancestry analysis",
-                    "default": true,
-                    "fa_icon": "fas fa-dna"
-                },
                 "ancestry_db": {
                     "type": "string",
                     "format": "file-path",
