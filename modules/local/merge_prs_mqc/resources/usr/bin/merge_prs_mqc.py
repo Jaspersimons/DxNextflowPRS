@@ -54,8 +54,8 @@ model_bgcols = {m: model_palette[i % len(model_palette)] for i, m in enumerate(u
 def _emit_bgcols(out, column, mapping):
     out.write(f"#     {column}:\n")
     out.write("#         bgcols:\n")
-    for k, c in mapping.items():
-        out.write(f"#             '{k}': '{c}'\n")
+    for key, color in mapping.items():
+        out.write(f"#             '{key}': '{color}'\n")
 
 with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("# id: 'prs-scores'\n")
