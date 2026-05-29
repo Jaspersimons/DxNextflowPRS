@@ -112,12 +112,12 @@ workflow PRS {
     SAMPLE_QC(
         CALC_SCORES.out.ch_score_norm
             .join(CALC_SCORES.out.ch_score_summary)
-            .map { m, n, s -> [m.sample_id, m, n, s] }
+            .map { meta, scores, summary -> [meta.sample_id, meta, scores, summary] }
             .combine(
-                ANCESTRY.out.knn_tsv.map { m, k -> [m.id, k] },
+                ANCESTRY.out.knn_tsv.map { ancestry_meta, knn -> [ancestry_meta.id, knn] },
                 by: 0
             )
-            .map { _sid, m, n, s, k -> [m, n, k, s] }
+            .map { _sid, meta, scores, summary, knn -> [meta, scores, knn, summary] }
     )
 
 
