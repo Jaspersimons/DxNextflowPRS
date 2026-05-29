@@ -4,7 +4,9 @@
             [
                 [
                     {
-                        "id": "test_panel"
+                        "id": "test_panel",
+                        "mu": "-0.424",
+                        "sd": "0.611"
                     },
                     "test_panel_normalised_counts.tsv:md5,a6e8cd0360761425f2bfe13ebf369c63"
                 ]
@@ -14,6 +16,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.4"
         },
-        "timestamp": "2026-03-20T10:19:38.86468"
+        "timestamp": "2026-04-28T14:47:31.614971"
     }
 }

@@ -1,4 +1,5 @@
-include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main' 
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { BCFTOOLS_NORM         } from '../../../modules/nf-core/bcftools/norm/main'
 
 workflow VARIANT_CALLING {
     take:
@@ -10,22 +11,41 @@ workflow VARIANT_CALLING {
     ch_dbsnp_index
     ch_snp_list
     ch_snp_vcf
-    
+
 
     main:
 
-    ch_alleles = ch_snp_vcf.collect()
+    // [model_meta, snplist, vcf, tbi]
+    ch_per_model = ch_snp_list.join(ch_snp_vcf)
+
+    ch_hc = ch_samplesheet.combine(ch_per_model)
+        .multiMap { sm, bam, bai, mm, snplist, vcf, tbi ->
+            def meta = [
+                id: "${sm.id}__${mm.id}",
+                sample_id: sm.id,
+                model_id: mm.id,
+                mu: mm.mu,
+                sd: mm.sd,
+                alpha: mm.alpha,
+            ]
+            input:   [meta, bam, bai, snplist, []]
+            alleles: [[id: meta.id], vcf, tbi]
+        }
 
     GATK4_HAPLOTYPECALLER(
-        ch_samplesheet.combine(
-            ch_snp_list.map { _meta, path -> path }
-        ).map { meta, bam, bai, tsv -> [meta, bam, bai, tsv, []] },
+        ch_hc.input,
         ch_genome_fasta,
         ch_genome_index,
         ch_genome_dict,
         ch_dbsnp,
         ch_dbsnp_index,
-        ch_alleles
+        ch_hc.alleles
+    )
+
+    BCFTOOLS_NORM(
+        GATK4_HAPLOTYPECALLER.out.vcf
+            .join(GATK4_HAPLOTYPECALLER.out.tbi),
+        ch_genome_fasta
     )
 
     // Collate software versions
@@ -33,7 +53,7 @@ workflow VARIANT_CALLING {
     ch_versions = ch_versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
     emit:
-    vcf         = GATK4_HAPLOTYPECALLER.out.vcf
-    tbi         = GATK4_HAPLOTYPECALLER.out.tbi
+    vcf         = BCFTOOLS_NORM.out.vcf
+    tbi         = BCFTOOLS_NORM.out.tbi
     ch_versions = ch_versions
 }
