@@ -18,12 +18,12 @@ workflow CALC_SCORES {
     ch_match_input = PLINK2_VCF.out.pvar_zst
         .map { meta, pvar -> [meta.model_id, meta, pvar] }
         .combine(
-            ch_normalised_model.map { meta, m -> [meta.id, m] },
+            ch_normalised_model.map { meta, model -> [meta.id, model] },
             by: 0
         )
-        .multiMap { _mid, sm_meta, pvar, m ->
+        .multiMap { _mid, sm_meta, pvar, model ->
             target:    [sm_meta, pvar]
-            scorefile: [sm_meta, m]
+            scorefile: [sm_meta, model]
         }
 
     PGSCATALOG_MATCH(
