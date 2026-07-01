@@ -17,11 +17,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [id: "test_panel"],
+                [id: "test_panel", mu: "-0.424", sd: "0.611"],
                     file("https://raw.githubusercontent.com/UMCUGenetics/DxNextflowTestData/main/DxNextflowPRS/raw_PGS.sscores", checkIfExists: true)
                 ]
-                input[1] = Channel.value("-0.424") // mu
-                input[2] = Channel.value("0.611") // sd
                 """
             }
         }

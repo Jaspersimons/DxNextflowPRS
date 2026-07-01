@@ -16,6 +16,9 @@ process SAMPLE_QC {
     """
     sample_qc.py \\
         ${args} \\
+        --sample ${meta.sample_id} \\
+        --model ${meta.model_id} \\
+        --alpha ${meta.alpha} \\
         --scores ${scores} \\
         --ancestry ${ancestry} \\
         --model-summary ${model_summary} \\

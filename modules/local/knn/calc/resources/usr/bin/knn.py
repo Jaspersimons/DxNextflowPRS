@@ -2,10 +2,10 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "matplotlib",
-#     "numpy",
-#     "pandas",
-#     "typer",
+#     "matplotlib~=3.10.0",
+#     "numpy==2.4.6",
+#     "pandas==3.0.3",
+#     "typer==0.26.7",
 # ]
 # ///
 """Run K-nearest-neighbor ancestry prediction from PCA coordinates."""

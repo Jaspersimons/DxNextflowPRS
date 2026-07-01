@@ -34,12 +34,34 @@ custom_data:
 
   prs-scores:
     section_name: "PRS Scores"
-    description: "Normalised Polygenic Risk Score results per sample"
+    description: "Normalised Polygenic Risk Score results per (sample, model)"
     file_format: "tsv"
     plot_type: "table"
     pconfig:
       id: "prs-scores"
       title: "PRS Scores"
+      no_violin: true
+    headers:
+      Sample_Model:
+        hidden: true
+      Sample:
+        title: "Sample"
+      Model:
+        title: "Model"
+      Z-score:
+        title: "Z-score"
+        format: "{:,.3f}"
+        scale: "RdYlGn-rev"
+      "QC Status":
+        title: "QC Status"
+        bgcols:
+          PASS: "#5cb85c"
+          FAIL: "#d9534f"
+      "QC Comment":
+        title: "QC Comment"
+      "Model Alpha":
+        title: "Model Alpha"
+        format: "{:,.2f}"
 
 
 sp:
