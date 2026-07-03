@@ -65,4 +65,7 @@ with open('prs_scores_mqc.tsv', 'w') as out:
     _emit_bgcols(out, 'Sample_Model', sample_model_bgcols)
     _emit_bgcols(out, 'Sample', sample_bgcols)
     _emit_bgcols(out, 'Model', model_bgcols)
+    out.write("#     Model Alpha:\n")
+    out.write("#          title: 'Model Alpha'\n")
+    out.write("#          format: '{:,.3f}'\n")
     combined.to_csv(out, sep='\t', index=False)
