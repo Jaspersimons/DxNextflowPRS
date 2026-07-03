@@ -68,4 +68,7 @@ with open('prs_scores_mqc.tsv', 'w') as out:
     out.write("#     Model Alpha:\n")
     out.write("#          title: 'Model Alpha'\n")
     out.write("#          format: '{:,.3f}'\n")
+    out.write("#     Z-score:\n")
+    out.write("#          title: 'Z-score'\n")
+    out.write("#          format: '{:,.2f}'\n")
     combined.to_csv(out, sep='\t', index=False)
