@@ -16,14 +16,14 @@
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.bam$",
+                "pattern": "^\\S+\\.(bam|cram)$",
                 "errorMessage": "BAM file"
             },
             "bai": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.bam.bai$",
+                "pattern": "^\\S+\\.(bam\\.bai|cram\\.crai)$",
                 "errorMessage": "BAM index file"
             }
         },
